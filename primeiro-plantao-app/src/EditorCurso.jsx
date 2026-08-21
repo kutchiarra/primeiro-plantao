@@ -5,6 +5,7 @@ import { novoCodigoTurma, salvarCurso, removerCurso } from './dados/cursos.js';
 const aulaVazia = () => ({
   id: 'aula-' + Math.random().toString(36).slice(2, 8),
   titulo: '', objetivo: '', casoId: casos[0].id, notaDoPreceptor: '',
+  avaliacao: { ativa: false, notaMinima: 70 },
 });
 
 const cursoVazio = () => ({
@@ -31,6 +32,11 @@ export default function EditorCurso({ curso, aoSalvar, aoCancelar, aoRemover }) 
       setC({ ...c, aulas });
     },
   });
+  const atualizarAvaliacao = (i, patch) => {
+    const aulas = [...c.aulas];
+    aulas[i] = { ...aulas[i], avaliacao: { ativa: false, notaMinima: 70, ...aulas[i].avaliacao, ...patch } };
+    setC({ ...c, aulas });
+  };
 
   function salvar(e) {
     e.preventDefault();
@@ -90,6 +96,17 @@ export default function EditorCurso({ curso, aoSalvar, aoCancelar, aoRemover }) 
                   <textarea {...campoAula(i, 'notaDoPreceptor')} rows={2}
                     placeholder="Como conduzir a discussão depois do debriefing" />
                 </label>
+                <label className="editor__check">
+                  <input type="checkbox" checked={a.avaliacao?.ativa || false}
+                    onChange={(e) => atualizarAvaliacao(i, { ativa: e.target.checked })} />
+                  Esta aula é uma prova (pede nome do aluno e nota mínima)
+                </label>
+                {a.avaliacao?.ativa && (
+                  <label>Nota mínima para aprovação (0–100)
+                    <input type="number" min={0} max={100} value={a.avaliacao?.notaMinima ?? 70}
+                      onChange={(e) => atualizarAvaliacao(i, { notaMinima: Number(e.target.value) })} />
+                  </label>
+                )}
               </li>
             ))}
           </ol>

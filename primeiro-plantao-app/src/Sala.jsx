@@ -1,7 +1,7 @@
 import { casos } from './dados/casos.js';
 import { carregarProgresso } from './dados/cursos.js';
 
-export default function Sala({ cursos, aoAbrirCurso, aoEditarCurso, aoNovoCurso, aoAtender }) {
+export default function Sala({ cursos, aoAbrirCurso, aoEditarCurso, aoNovoCurso, aoAtender, aoGerarProva }) {
   const progresso = carregarProgresso();
   const concluidas = (curso) =>
     curso.aulas.filter((a) => progresso[`${curso.id}::${a.id}`]).length;
@@ -59,7 +59,10 @@ export default function Sala({ cursos, aoAbrirCurso, aoEditarCurso, aoNovoCurso,
                   {c.persona.nome} · {c.persona.idade} anos · ~{c.duracaoMin} min
                 </p>
               </div>
-              <button className="acao" onClick={() => aoAtender(c.id)}>Atender agora</button>
+              <div className="casos__acoes">
+                <button className="acao" onClick={() => aoAtender(c.id)}>Atender agora</button>
+                <button className="secundario" onClick={() => aoGerarProva(c.id)}>Gerar prova</button>
+              </div>
             </li>
           ))}
         </ul>

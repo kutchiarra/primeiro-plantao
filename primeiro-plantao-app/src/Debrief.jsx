@@ -57,6 +57,12 @@ export default function Debrief({ r, caso, aoVoltar, aoRefazer }) {
         {chave && <em>Conduta que define o caso: {chave.nome}.</em>}
       </p>
 
+      {r.notaMinima != null && (
+        <p className={r.total >= r.notaMinima ? 'debrief__aprovado' : 'debrief__reprovado'}>
+          {r.aluno && <>{r.aluno} · </>}Nota mínima da prova: {r.notaMinima}/100 — {r.total >= r.notaMinima ? 'Aprovado' : 'Reprovado'}
+        </p>
+      )}
+
       <section className="achados">
         <h2 className="rotulo">O que apareceu no seu atendimento · {r.achados.length} pontos</h2>
         {r.achados.length === 0 && <p className="vazio">Nada a corrigir. Isso é raro.</p>}

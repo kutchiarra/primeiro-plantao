@@ -79,15 +79,58 @@ export const novoCodigoTurma = () => {
 
 export const carregarProgresso = () => ler(CHAVE_PROGRESSO, {});
 
-export function registrarConclusao(cursoId, aulaId, resumo) {
+export function registrarConclusao(cursoId, aulaId, resumo, { limite = 10 } = {}) {
   const p = carregarProgresso();
   const chave = `${cursoId}::${aulaId}`;
   const anteriores = p[chave]?.tentativas || [];
   p[chave] = {
-    tentativas: [...anteriores, resumo].slice(-10),
+    tentativas: [...anteriores, resumo].slice(-limite),
     melhor: Math.max(resumo.total, p[chave]?.melhor ?? 0),
     ultima: resumo,
   };
   gravar(CHAVE_PROGRESSO, p);
   return p;
+}
+
+// ------------------------------------------------------- avaliação em turma
+// Como não há backend neste protótipo, o roster de uma prova é local ao
+// navegador. Export/import é a ponte manual entre dispositivos de alunos.
+export function exportarResultadosCurso(cursoId) {
+  const progresso = carregarProgresso();
+  const registros = Object.entries(progresso)
+    .filter(([chave]) => chave.startsWith(`${cursoId}::`))
+    .map(([chave, valor]) => ({ chave, ...valor }));
+  return { versao: 1, cursoId, exportadoEm: new Date().toISOString(), registros };
+}
+
+const chaveTentativa = (t) => `${t.aluno || ''}::${t.em || ''}`;
+
+export function importarResultadosCurso(pacote) {
+  if (!pacote?.registros) return carregarProgresso();
+  const progresso = carregarProgresso();
+  for (const r of pacote.registros) {
+    const existente = progresso[r.chave];
+    const vistos = new Set((existente?.tentativas || []).map(chaveTentativa));
+    const novas = (r.tentativas || []).filter((t) => !vistos.has(chaveTentativa(t)));
+    progresso[r.chave] = {
+      tentativas: [...(existente?.tentativas || []), ...novas].slice(-500),
+      melhor: Math.max(existente?.melhor ?? 0, r.melhor ?? 0),
+      ultima: r.ultima ?? existente?.ultima,
+    };
+  }
+  gravar(CHAVE_PROGRESSO, progresso);
+  return progresso;
+}
+
+export function agruparPorAluno(tentativas, notaMinima) {
+  const mapa = new Map();
+  for (const t of tentativas) {
+    const nome = t.aluno || 'Sem nome';
+    const atual = mapa.get(nome) || { aluno: nome, melhor: 0, tentativas: 0, ultima: null };
+    atual.melhor = Math.max(atual.melhor, t.total);
+    atual.tentativas += 1;
+    if (!atual.ultima || (t.em && t.em > atual.ultima)) atual.ultima = t.em;
+    mapa.set(nome, atual);
+  }
+  return [...mapa.values()].map((r) => ({ ...r, aprovado: notaMinima != null ? r.melhor >= notaMinima : null }));
 }
