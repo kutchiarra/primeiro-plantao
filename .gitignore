@@ -1,0 +1,16 @@
+# Projetos irmãos com repositório git próprio — não fazem parte deste repo.
+/MedAgentSim/
+/dynajs/
+/rohySimulator/
+
+# Dependências e build
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Editores/SO
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db

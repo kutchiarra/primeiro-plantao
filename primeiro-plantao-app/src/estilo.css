@@ -1,0 +1,634 @@
+/* ---------------------------------------------------------------------------
+   Primeiro Plantão — sala de atendimento.
+   Direção: a interface é uma papeleta de pronto-socorro. O instrumento é uma
+   fita de ECG em papel milimetrado. O que o médico escreve é caneta azul; o
+   que a paciente fala é texto humano, em serifada.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --papel: #FAF3F0;
+  --papel-2: #F4E8E3;
+  --mesa: #EADCD6;
+  --linha: #E4D6D0;
+  --linha-forte: #CDB8B0;
+  --tinta: #191411;
+  --tinta-2: #4C423C;
+  --tinta-3: #8C7C74;
+  --caneta: #1B3FA0;
+  --caneta-fundo: #E8EDF9;
+  --carimbo: #B8241C;
+  --atencao: #8F5B12;
+  --verde: #2C6A4A;
+
+  --ui: 'Archivo', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --voz: 'Newsreader', Georgia, serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--mesa);
+  color: var(--tinta);
+  font-family: var(--ui);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--caneta); outline-offset: 2px; }
+
+.tabular { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.rotulo {
+  font-family: var(--mono); font-size: 10px; font-weight: 500;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--tinta-3);
+  margin: 0;
+}
+.carimbo {
+  display: inline-block; font-family: var(--mono); font-size: 9.5px; font-weight: 500;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--carimbo);
+  border: 1px solid var(--carimbo); padding: 2px 7px; margin-bottom: 10px;
+}
+.un { font-family: var(--mono); font-size: 10px; color: var(--tinta-3); letter-spacing: .08em; }
+.vazio { color: var(--tinta-3); font-size: 14px; margin: 14px 2px; }
+
+/* ---------------------------------------------------------- folha de papel */
+.plantao {
+  max-width: 1340px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--papel);
+  border-left: 1px solid var(--linha-forte);
+  border-right: 1px solid var(--linha-forte);
+  display: flex;
+  flex-direction: column;
+}
+.plantao--critico { box-shadow: inset 0 3px 0 var(--carimbo); }
+
+/* -------------------------------------------------------------- cabeçalho */
+.papeleta {
+  display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end;
+  padding: 26px 30px 18px;
+  border-bottom: 3px double var(--linha-forte);
+}
+.papeleta h1 {
+  font-size: 30px; font-weight: 600; letter-spacing: -.022em; margin: 0 0 4px;
+}
+.papeleta__linha { margin: 0; font-size: 13px; color: var(--tinta-2); }
+.papeleta__queixa {
+  margin: 8px 0 0; font-family: var(--voz); font-size: 17px; font-style: italic; color: var(--tinta);
+}
+.papeleta__campos { display: flex; gap: 0; margin: 0; }
+.papeleta__campos > div {
+  padding: 0 20px; border-left: 1px solid var(--linha); text-align: right; min-width: 150px;
+}
+.papeleta__campos > div:first-child { border-left: none; }
+.papeleta__campos dt {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--tinta-3); margin-bottom: 4px;
+}
+.papeleta__campos dd { margin: 0; }
+.papeleta__campos .grande { font-size: 25px; line-height: 1.1; }
+.papeleta__campos .nota { font-size: 11px; color: var(--tinta-3); font-family: var(--mono); margin-top: 3px; }
+
+/* ------------------------------------------------------------------- mesa */
+.mesa { display: grid; grid-template-columns: minmax(0,1fr) 490px; flex: 1; }
+.coluna { padding: 22px 30px 26px; display: flex; flex-direction: column; min-width: 0; }
+.coluna--instrumento { border-left: 1px solid var(--linha-forte); background: var(--papel-2); padding: 22px 26px 26px; }
+
+/* --------------------------------------------------------------- conversa */
+.conversa {
+  flex: 1; overflow-y: auto; margin: 12px 0 4px;
+  display: flex; flex-direction: column; gap: 14px;
+  max-height: calc(100vh - 430px); min-height: 260px; padding-right: 4px;
+}
+.fala { display: grid; grid-template-columns: 40px minmax(0,1fr); gap: 12px; margin: 0; }
+.fala__hora { font-size: 10px; color: var(--tinta-3); padding-top: 4px; }
+.fala p { margin: 0; }
+.fala--paciente p {
+  font-family: var(--voz); font-size: 17.5px; line-height: 1.5; color: var(--tinta);
+}
+.fala--medico p {
+  border-left: 2px solid var(--caneta); padding-left: 12px;
+  color: var(--caneta); font-size: 15px;
+}
+.fala--exame p, .fala--conduta p {
+  font-family: var(--mono); font-size: 12.5px; line-height: 1.5;
+  border-top: 1px solid var(--linha); border-bottom: 1px solid var(--linha);
+  padding: 7px 0; color: var(--tinta-2);
+}
+.fala--conduta p { color: var(--verde); }
+.fala--alarme p {
+  font-family: var(--mono); font-size: 12.5px; color: var(--carimbo);
+  border-left: 2px solid var(--carimbo); padding-left: 12px;
+}
+
+.atalhos { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
+.atalho {
+  background: none; border: 1px solid var(--linha-forte); color: var(--caneta);
+  font-size: 12.5px; padding: 5px 10px; text-align: left;
+}
+.atalho:hover { background: var(--caneta-fundo); border-color: var(--caneta); }
+
+.pergunta { display: flex; gap: 0; margin-top: 12px; border-bottom: 1.5px solid var(--tinta); }
+.pergunta input {
+  flex: 1; background: none; border: none; padding: 10px 2px; font-size: 15px; color: var(--caneta);
+}
+.pergunta input::placeholder { color: var(--tinta-3); }
+.pergunta input:focus { outline: none; }
+.pergunta button {
+  background: var(--caneta); color: #fff; border: none; padding: 9px 18px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+}
+.pergunta button:hover { background: #16337F; }
+
+.manobras { margin-top: 22px; }
+.manobras__grade { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
+.manobras__grade button {
+  background: none; border: 1px solid var(--linha-forte); padding: 9px 12px;
+  font-size: 13px; text-align: left;
+}
+.manobras__grade button:hover:not(:disabled) { background: var(--caneta-fundo); border-color: var(--caneta); }
+.manobras__grade button:disabled { color: var(--tinta-3); border-style: dashed; cursor: default; }
+.manobras__grade button.ativa { background: var(--caneta-fundo); border-color: var(--caneta); }
+
+.painel-ausculta { margin-top: 10px; border: 1px solid var(--linha-forte); background: #FCF1EC; }
+.painel-ausculta__topo {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 10px; border-bottom: 1px solid var(--linha-forte); font-size: 13px;
+}
+.painel-ausculta__acoes { display: flex; gap: 6px; }
+.painel-ausculta canvas { display: block; width: 100%; }
+.painel-ausculta__achado {
+  padding: 8px 10px; margin: 0; font-size: 12.5px; color: var(--tinta-2);
+  border-top: 1px solid var(--linha);
+}
+
+/* ----------------------------------------------------------- instrumento */
+.instrumento { border: 1px solid var(--linha-forte); background: #FCF1EC; }
+.plantao--critico .instrumento { border-color: var(--carimbo); }
+.fita { display: block; width: 100%; }
+.vitais {
+  display: grid; grid-template-columns: repeat(4, 1fr); margin: 0;
+  border-top: 1px solid var(--linha-forte);
+}
+.vitais > div { padding: 10px 8px 9px; border-left: 1px solid var(--linha); text-align: center; }
+.vitais > div:nth-child(4n + 1) { border-left: none; }
+.vitais > div:nth-child(n + 5) { border-top: 1px solid var(--linha); }
+.vitais dt {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--tinta-3);
+}
+.vitais dd { margin: 2px 0 0; font-family: var(--mono); font-size: 23px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.vitais dd.un { font-size: 9.5px; margin-top: 2px; }
+.vitais .critico dd { color: var(--carimbo); }
+
+/* --------------------------------------------------------------- pedidos */
+.pedidos { margin-top: 20px; display: flex; flex-direction: column; min-height: 0; }
+.abas { display: flex; gap: 18px; border-bottom: 1px solid var(--linha-forte); }
+.abas button {
+  background: none; border: none; padding: 8px 0 9px; margin-bottom: -1px;
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--tinta-3); border-bottom: 2px solid transparent;
+}
+.abas button[aria-selected='true'] { color: var(--tinta); border-bottom-color: var(--tinta); }
+.badge {
+  display: inline-block; font-style: normal; background: var(--carimbo); color: #fff;
+  border-radius: 99px; padding: 0 5px; margin-left: 6px; font-size: 9.5px;
+}
+
+.catalogo { list-style: none; margin: 0; padding: 0; overflow-y: auto; max-height: 340px; }
+.catalogo li + li { border-top: 1px solid var(--linha); }
+.catalogo button {
+  width: 100%; background: none; border: none; padding: 10px 2px;
+  display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 4px 12px; text-align: left; align-items: baseline;
+}
+.catalogo button:hover:not(:disabled) { background: var(--caneta-fundo); }
+.catalogo button:disabled { cursor: default; color: var(--tinta-3); }
+.catalogo__nome { font-size: 14px; }
+.catalogo__meta { font-size: 11px; color: var(--tinta-3); white-space: nowrap; }
+.catalogo__estado {
+  grid-column: 1 / -1; font-family: var(--mono); font-size: 10px;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--caneta);
+}
+
+.resultados { overflow-y: auto; max-height: 340px; padding-top: 4px; }
+.laudo {
+  border: 1px solid var(--linha-forte); background: var(--papel); padding: 10px 12px; margin-top: 10px;
+  animation: entrar .28s ease-out;
+}
+.laudo header { display: flex; align-items: baseline; gap: 8px; font-size: 13px; }
+.laudo header span:first-child { font-size: 10px; color: var(--tinta-3); }
+.laudo header b { flex: 1; font-weight: 500; }
+.laudo__texto { margin: 8px 0 0; font-family: var(--mono); font-size: 12px; line-height: 1.55; }
+.laudo__abrir {
+  margin-top: 8px; background: none; border: 1px solid var(--caneta); color: var(--caneta);
+  font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 10px;
+}
+.laudo__abrir:hover { background: var(--caneta); color: #fff; }
+.laudo__barra { height: 2px; background: var(--linha); margin-top: 9px; }
+.laudo__barra i { display: block; height: 100%; background: var(--caneta); transition: width .5s linear; }
+.laudo--espera { border-style: dashed; }
+.flag {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase;
+  border: 1px solid currentColor; padding: 1px 6px; color: var(--tinta-3);
+}
+.flag--critico, .flag--alto { color: var(--carimbo); }
+.flag--normal { color: var(--verde); }
+
+/* ---------------------------------------------------------------- rodapé */
+.rodape {
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  padding: 14px 30px; border-top: 3px double var(--linha-forte); background: var(--papel);
+  position: sticky; bottom: 0;
+}
+.rodape p { margin: 0; font-size: 13px; color: var(--tinta-2); }
+.plantao--critico .rodape p { color: var(--carimbo); }
+.encerrar {
+  background: var(--tinta); color: var(--papel); border: none; padding: 11px 22px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+}
+.encerrar:hover { background: var(--caneta); }
+
+/* ------------------------------------------------------- folha de fechamento */
+.folha {
+  position: fixed; inset: 0; background: rgba(25, 20, 17, .5);
+  display: grid; place-items: center; padding: 24px; z-index: 20;
+}
+.folha__caixa {
+  background: var(--papel); border: 1px solid var(--linha-forte); padding: 26px 28px;
+  width: min(560px, 100%); animation: entrar .22s ease-out;
+}
+.folha__caixa h2 { font-size: 21px; font-weight: 600; letter-spacing: -.015em; margin: 0 0 18px; }
+.folha__caixa label {
+  display: block; margin-bottom: 16px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--tinta-3);
+}
+.folha__caixa input, .folha__caixa textarea {
+  display: block; width: 100%; margin-top: 7px; background: none;
+  border: none; border-bottom: 1.5px solid var(--tinta); padding: 8px 2px;
+  font-family: var(--ui); font-size: 15px; letter-spacing: 0; text-transform: none; color: var(--caneta);
+  resize: vertical;
+}
+.folha__acoes { display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px; }
+.folha__acoes button {
+  background: var(--tinta); color: var(--papel); border: none; padding: 11px 20px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+}
+.folha__acoes .secundario { background: none; color: var(--tinta-2); border: 1px solid var(--linha-forte); }
+
+/* -------------------------------------------------------------- debriefing */
+.debrief {
+  max-width: 940px; margin: 0 auto; min-height: 100vh; background: var(--papel);
+  border-left: 1px solid var(--linha-forte); border-right: 1px solid var(--linha-forte);
+  padding: 34px 40px 60px;
+}
+.debrief__topo {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 30px;
+  border-bottom: 3px double var(--linha-forte); padding-bottom: 20px;
+}
+.debrief__topo h1 { font-size: 25px; font-weight: 600; letter-spacing: -.02em; margin: 0 0 6px; max-width: 28ch; }
+.debrief__ref { margin: 0; font-family: var(--mono); font-size: 11px; color: var(--tinta-3); }
+.debrief__nota { text-align: right; }
+.debrief__nota strong { display: block; font-size: 52px; line-height: 1; font-weight: 500; }
+
+.pilares { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 22px; margin: 26px 0 30px; }
+.pilar__cabeca { display: flex; justify-content: space-between; align-items: baseline; }
+.pilar__cabeca b { font-size: 15px; font-weight: 600; }
+.pilar__cabeca span { font-family: var(--mono); font-size: 17px; }
+.pilar__cabeca i { font-style: normal; font-size: 11px; color: var(--tinta-3); }
+.pilar__regua { height: 5px; background: var(--linha); margin: 8px 0 7px; }
+.pilar__regua i { display: block; height: 100%; background: var(--caneta); }
+.pilar p { margin: 0; font-size: 12.5px; color: var(--tinta-3); line-height: 1.4; }
+
+.numeros {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  border-top: 1px solid var(--linha-forte); border-bottom: 1px solid var(--linha-forte);
+}
+.numeros > div { padding: 12px 16px; border-left: 1px solid var(--linha); }
+.numeros > div:first-child { border-left: none; padding-left: 0; }
+.numeros b { display: block; font-size: 19px; font-weight: 500; margin-top: 3px; }
+
+.aviso {
+  border-left: 2px solid var(--carimbo); background: #FBEDEC; padding: 12px 16px;
+  margin: 22px 0 0; font-size: 14.5px; color: var(--tinta);
+}
+
+.achados { margin-top: 30px; }
+.achados ol { list-style: none; margin: 14px 0 0; padding: 0; }
+.achado { border-top: 1px solid var(--linha); padding: 16px 0 16px 16px; border-left: 2px solid var(--linha-forte); }
+.achado--critico { border-left-color: var(--carimbo); }
+.achado--importante { border-left-color: var(--atencao); }
+.achado__tags { display: flex; gap: 8px; margin-bottom: 5px; }
+.achado__tags span {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase;
+}
+.achado--critico .sev { color: var(--carimbo); }
+.achado--importante .sev { color: var(--atencao); }
+.achado--refinamento .sev { color: var(--tinta-3); }
+.achado__tags .pil { color: var(--tinta-3); }
+.achado b { display: block; font-size: 15.5px; font-weight: 600; }
+.achado p { margin: 4px 0 0; font-size: 14.5px; color: var(--tinta-2); max-width: 70ch; }
+
+.debrief__rodape {
+  margin-top: 40px; padding-top: 18px; border-top: 3px double var(--linha-forte);
+  display: flex; justify-content: space-between; align-items: center; gap: 24px;
+}
+.debrief__rodape p { margin: 0; font-size: 12.5px; color: var(--tinta-3); max-width: 62ch; }
+.debrief__rodape button {
+  background: var(--tinta); color: var(--papel); border: none; padding: 11px 20px; white-space: nowrap;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+}
+
+/* --------------------------------------------------------- estado do caso */
+.papeleta__aula {
+  display: block; font-family: var(--mono); font-size: 10px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--caneta); margin-bottom: 8px;
+}
+.estado { text-transform: lowercase; }
+.estado--atencao { color: var(--atencao); }
+.estado--critico { color: var(--carimbo); }
+.plantao--atencao .rodape p { color: var(--atencao); }
+.sair {
+  position: absolute; top: 18px; right: 30px; background: none; border: 1px solid var(--linha-forte);
+  color: var(--tinta-3); padding: 5px 10px;
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase;
+}
+.sair:hover { color: var(--tinta); border-color: var(--tinta); }
+.papeleta { position: relative; }
+
+/* ------------------------------------------------------------- tendência */
+.tendencia { border-top: 1px solid var(--linha-forte); }
+.tendencia canvas { display: block; width: 100%; }
+.tendencia__legenda {
+  display: flex; align-items: center; gap: 12px; padding: 7px 10px 0;
+}
+.tendencia__legenda em {
+  font-style: normal; font-family: var(--mono); font-size: 10px; letter-spacing: .08em;
+}
+.tendencia__legenda em::before {
+  content: ''; display: inline-block; width: 10px; height: 2px;
+  background: currentColor; margin-right: 5px; vertical-align: middle;
+}
+
+/* --------------------------------------------------------- fármaco ativo */
+.emacao { margin-top: 18px; }
+.emacao .rotulo { margin-bottom: 8px; display: block; }
+.droga { border-top: 1px solid var(--linha); padding: 9px 0 10px; }
+.droga--fim { opacity: .45; }
+.droga header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.droga header b { font-size: 13.5px; font-weight: 600; }
+.droga header span { font-size: 10px; color: var(--tinta-3); }
+.droga__barra { height: 3px; background: var(--linha); margin: 6px 0 6px; }
+.droga__barra i { display: block; height: 100%; background: var(--verde); transition: width .4s linear; }
+.droga__efeito { font-size: 11px; color: var(--tinta-2); margin: 0; letter-spacing: .02em; }
+.droga__inter {
+  margin: 5px 0 0; font-family: var(--mono); font-size: 10px; color: var(--tinta-3);
+  border-left: 2px solid var(--linha-forte); padding-left: 8px;
+}
+.droga__inter--forte { color: var(--carimbo); border-left-color: var(--carimbo); }
+
+/* ------------------------------------------------------------------ doses */
+.catalogo li.aberto { background: var(--papel); }
+.doses { padding: 2px 4px 12px; }
+.doses__nota { margin: 0 0 9px; font-size: 12.5px; color: var(--tinta-2); line-height: 1.45; max-width: 46ch; }
+.doses__grade { display: flex; flex-wrap: wrap; gap: 6px; }
+.doses__grade button {
+  background: var(--caneta); color: #fff; border: none; padding: 7px 12px; text-align: left;
+  font-family: var(--mono); font-size: 12px;
+}
+.doses__grade button em {
+  display: block; font-style: normal; font-size: 9px; opacity: .75; letter-spacing: .08em; text-transform: uppercase;
+}
+.doses__grade button:hover { background: #16337F; }
+
+/* ------------------------------------------------------------ sala/cursos */
+.sala {
+  max-width: 1060px; margin: 0 auto; min-height: 100vh; background: var(--papel);
+  border-left: 1px solid var(--linha-forte); border-right: 1px solid var(--linha-forte);
+  padding: 34px 40px 70px;
+}
+.sala__topo {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 30px;
+  border-bottom: 3px double var(--linha-forte); padding-bottom: 22px;
+}
+.sala__topo h1 { font-size: 32px; font-weight: 600; letter-spacing: -.024em; margin: 0 0 10px; }
+.sala__lede { margin: 0; font-size: 16px; color: var(--tinta-2); max-width: 60ch; }
+.voltar {
+  background: none; border: none; padding: 0 0 12px; color: var(--tinta-3);
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase;
+}
+.voltar:hover { color: var(--caneta); }
+.bloco { margin-top: 34px; }
+.bloco > .rotulo { display: block; padding-bottom: 8px; border-bottom: 1px solid var(--linha); }
+
+.acao {
+  background: var(--tinta); color: var(--papel); border: none; padding: 11px 20px; white-space: nowrap;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+}
+.acao:hover { background: var(--caneta); }
+.acao:disabled { background: var(--linha-forte); color: var(--papel); cursor: default; }
+.secundario {
+  background: none; border: 1px solid var(--linha-forte); color: var(--tinta-2); padding: 10px 18px; white-space: nowrap;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+}
+.secundario:hover { border-color: var(--tinta); color: var(--tinta); }
+.perigo { background: none; border: 1px solid var(--carimbo); color: var(--carimbo); padding: 10px 18px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+.tag {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--tinta-3);
+}
+.codigo { color: var(--caneta); letter-spacing: .1em; }
+.codigo.grande { font-size: 22px; }
+
+.cursos { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-top: 16px; }
+.curso-cartao { border: 1px solid var(--linha-forte); padding: 18px 20px 20px; display: flex; flex-direction: column; }
+.curso-cartao__topo { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+.curso-cartao h3 { font-size: 19px; font-weight: 600; letter-spacing: -.015em; margin: 0; }
+.curso-cartao__sub { margin: 2px 0 10px; font-family: var(--voz); font-size: 15.5px; font-style: italic; color: var(--tinta-2); }
+.curso-cartao__desc { margin: 0 0 14px; font-size: 14px; color: var(--tinta-2); flex: 1; }
+.curso-cartao__nums { display: flex; gap: 0; margin: 0 0 16px; border-top: 1px solid var(--linha); }
+.curso-cartao__nums > div { padding: 9px 14px 0; border-left: 1px solid var(--linha); }
+.curso-cartao__nums > div:first-child { padding-left: 0; border-left: none; }
+.curso-cartao__nums dt { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--tinta-3); }
+.curso-cartao__nums dd { margin: 2px 0 0; font-size: 14px; }
+.curso-cartao__acoes { display: flex; gap: 8px; }
+
+.casos { list-style: none; margin: 8px 0 0; padding: 0; }
+.casos li {
+  display: flex; justify-content: space-between; align-items: center; gap: 24px;
+  border-bottom: 1px solid var(--linha); padding: 16px 0;
+}
+.casos h3 { font-size: 17px; font-weight: 600; margin: 4px 0 4px; }
+.casos p { margin: 0; font-size: 14px; color: var(--tinta-2); max-width: 62ch; }
+.casos__meta { font-size: 11px; color: var(--tinta-3); margin-top: 6px; }
+
+.curso__meta { margin: 10px 0 0; font-size: 11.5px; color: var(--tinta-3); }
+.curso__meta b { color: var(--caneta); }
+.curso__media { margin: 14px 0 10px; font-size: 15px; }
+
+.aulas { list-style: none; margin: 6px 0 0; padding: 0; }
+.aula { display: grid; grid-template-columns: 46px 1fr auto; gap: 16px; align-items: start;
+  border-bottom: 1px solid var(--linha); padding: 20px 0; }
+.aula__n { font-size: 21px; color: var(--linha-forte); line-height: 1; padding-top: 2px; }
+.aula h3 { font-size: 17.5px; font-weight: 600; margin: 0 0 6px; letter-spacing: -.012em; }
+.aula__objetivo { margin: 0 0 6px; font-size: 14.5px; color: var(--tinta-2); max-width: 66ch; }
+.aula__objetivo b { color: var(--tinta); }
+.aula__caso { margin: 0; font-size: 11px; color: var(--tinta-3); }
+.aula__caso--vazio { color: var(--carimbo); }
+.aula__nota {
+  margin: 10px 0 0; padding: 9px 12px; background: var(--papel-2); border-left: 2px solid var(--caneta);
+  font-size: 13.5px; color: var(--tinta-2); max-width: 68ch;
+}
+.aula__nota .rotulo { display: block; margin-bottom: 3px; }
+.aula__resultado { margin: 8px 0 0; font-size: 11px; color: var(--verde); }
+
+.tabela { overflow-x: auto; border: 1px solid var(--linha-forte); margin-top: 10px; }
+.tabela table { border-collapse: collapse; width: 100%; min-width: 620px; font-size: 13px; }
+.tabela th {
+  text-align: left; font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--tinta-3); font-weight: 400; padding: 9px 12px; background: var(--papel-2);
+  border-bottom: 1px solid var(--linha-forte);
+}
+.tabela td { padding: 9px 12px; border-bottom: 1px solid var(--linha); }
+.tabela tr:last-child td { border-bottom: none; }
+
+/* ---------------------------------------------------------------- editor */
+.editor__grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 4px 22px; margin-top: 14px; }
+.editor label, .editor__aulas label {
+  display: block; margin-bottom: 16px;
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--tinta-3);
+}
+.editor input, .editor textarea, .editor select {
+  display: block; width: 100%; margin-top: 6px; background: none;
+  border: none; border-bottom: 1.5px solid var(--linha-forte); padding: 7px 2px;
+  font-family: var(--ui); font-size: 15px; letter-spacing: 0; text-transform: none; color: var(--caneta);
+  resize: vertical;
+}
+.editor input:focus, .editor textarea:focus, .editor select:focus { border-bottom-color: var(--caneta); outline: none; }
+.editor .largo { max-width: none; }
+.editor__aulas { list-style: none; margin: 16px 0; padding: 0; }
+.editor__aulas > li { border: 1px solid var(--linha-forte); padding: 18px 20px 4px; margin-bottom: 14px; }
+.editor__aula-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.remover {
+  background: none; border: none; color: var(--tinta-3); padding: 0;
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase;
+}
+.remover:hover { color: var(--carimbo); }
+.editor__rodape {
+  display: flex; justify-content: flex-end; gap: 10px; margin-top: 26px;
+  border-top: 3px double var(--linha-forte); padding-top: 20px;
+}
+
+/* ------------------------------------------------------- debrief extras */
+.debrief__hipotese {
+  margin: 22px 0 0; padding: 14px 16px; border: 1px solid var(--linha-forte); background: var(--papel-2);
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px;
+}
+.debrief__hipotese b { font-size: 16px; font-weight: 600; }
+.debrief__hipotese .acertou { color: var(--verde); }
+.debrief__hipotese .errou { color: var(--carimbo); }
+.debrief__hipotese em { font-size: 13px; color: var(--tinta-3); font-style: normal; margin-left: auto; }
+.debrief__acoes { display: flex; gap: 8px; }
+.debrief__rodape button {
+  background: var(--tinta); color: var(--papel); border: none; padding: 11px 20px; white-space: nowrap;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+}
+.debrief__rodape .secundario { background: none; color: var(--tinta-2); border: 1px solid var(--linha-forte); }
+
+@media (min-width: 1041px) {
+  .coluna--instrumento { max-height: calc(100vh - 62px); overflow-y: auto; }
+}
+@media (max-width: 720px) {
+  .sala { padding: 26px 20px 50px; }
+  .sala__topo { flex-direction: column; }
+  .aula { grid-template-columns: 32px 1fr; }
+  .aula > .acao { grid-column: 2; justify-self: start; }
+  .casos li { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
+
+/* ------------------------------------------------------- mapa corporal */
+.mapa { display: grid; grid-template-columns: 138px minmax(0, 1fr); gap: 18px; align-items: start; margin-top: 10px; }
+.mapa__svg { width: 138px; height: auto; display: block; }
+.mapa__figura { fill: none; stroke: var(--tinta-3); stroke-width: 1.1; stroke-linejoin: round; stroke-linecap: round; }
+.mapa__figura ellipse, .mapa__figura path { fill: var(--papel-2); }
+.mapa__detalhe { fill: none; stroke-dasharray: 2 3; }
+.mapa__ponto { cursor: pointer; }
+.mapa__area {
+  fill: var(--caneta); fill-opacity: .06; stroke: var(--caneta); stroke-width: 1;
+  stroke-dasharray: 3 3; transition: fill-opacity .15s ease;
+}
+.mapa__miolo { fill: var(--caneta); }
+.mapa__ponto:hover .mapa__area, .mapa__ponto:focus-visible .mapa__area { fill-opacity: .22; stroke-dasharray: none; }
+.mapa__ponto:focus-visible { outline: none; }
+.mapa__ponto:focus-visible .mapa__area { stroke-width: 2; }
+.mapa__ponto--ativa .mapa__area { fill-opacity: .3; stroke-dasharray: none; stroke-width: 1.6; }
+.mapa__ponto--feita .mapa__area { stroke: var(--verde); fill: var(--verde); }
+.mapa__ponto--feita .mapa__miolo { fill: var(--verde); }
+.mapa__tique { fill: none; stroke: var(--verde); stroke-width: 1.6; stroke-linecap: round; }
+.mapa__lado { padding-top: 6px; }
+.mapa__dica { margin: 0 0 12px; font-size: 13px; color: var(--tinta-3); line-height: 1.45; min-height: 40px; }
+.mapa__dica b { display: block; font-size: 15px; color: var(--tinta); font-weight: 600; }
+.mapa__dica em {
+  font-style: normal; font-family: var(--mono); font-size: 10px;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--caneta);
+}
+.mapa__extras { display: flex; flex-wrap: wrap; gap: 6px; }
+.mapa__extras button {
+  background: none; border: 1px solid var(--linha-forte); padding: 7px 11px; font-size: 12.5px;
+}
+.mapa__extras button:hover, .mapa__extras button.ativa { background: var(--caneta-fundo); border-color: var(--caneta); }
+
+/* ------------------------------------------------------------- ECG 12 */
+.ecg12 {
+  display: block; width: 100%; margin-top: 10px;
+  border: 1px solid var(--linha-forte);
+}
+
+/* --------------------------------------------------- leitura da tendência */
+.tendencia__papel { position: relative; }
+.tendencia__dica {
+  margin-left: auto; font-family: var(--mono); font-size: 9px;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--tinta-3);
+}
+.tendencia__leitura {
+  position: absolute; top: 6px; pointer-events: none;
+  background: var(--papel); border: 1px solid var(--linha-forte);
+  padding: 6px 9px; display: flex; flex-direction: column; gap: 2px;
+  font-size: 10.5px; line-height: 1.3; min-width: 92px;
+}
+.tendencia__leitura b { font-size: 11px; color: var(--tinta-3); font-weight: 500; }
+.tendencia__leitura em { font-style: normal; color: #A8695A; font-size: 9.5px; margin-top: 2px; }
+
+/* ------------------------------------------------------ acabamento fino */
+.vitais .critico dd.tabular { animation: pulsar 2.6s ease-in-out infinite; }
+@keyframes pulsar { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+
+.emacao .rotulo, .pedidos .abas { border-top: 1px solid var(--linha-forte); padding-top: 12px; }
+.emacao .rotulo { margin-top: 4px; }
+
+@keyframes entrar { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+@media (max-width: 1040px) {
+  .mesa { grid-template-columns: 1fr; }
+  .coluna--instrumento { border-left: none; border-top: 1px solid var(--linha-forte); }
+  .conversa { max-height: none; }
+  .papeleta { grid-template-columns: 1fr; align-items: start; gap: 18px; }
+  .papeleta__campos > div { text-align: left; padding-left: 0; padding-right: 20px; border-left: none; border-right: 1px solid var(--linha); }
+  .papeleta__campos > div:last-child { border-right: none; }
+  .debrief { padding: 26px 22px 50px; }
+}
+@media (max-width: 620px) {
+  .coluna, .papeleta, .rodape { padding-left: 18px; padding-right: 18px; }
+  .vitais { grid-template-columns: repeat(3, 1fr); }
+  .vitais > div:nth-child(4) { border-left: none; }
+  .debrief__topo { flex-direction: column; }
+  .debrief__nota { text-align: left; }
+}
