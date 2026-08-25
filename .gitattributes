@@ -1,0 +1,11 @@
+# Fim de linha normalizado no repositório.
+# Sem isto, um dev no Windows e outro fora dele produzem diffs em que "o
+# arquivo inteiro mudou" — e a revisão vira ruído.
+* text=auto eol=lf
+
+# Binários: nunca converter.
+*.png binary
+*.jpg binary
+*.pdf binary
+*.ttf binary
+*.zip binary
