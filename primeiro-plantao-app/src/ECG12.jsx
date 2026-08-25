@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { amplitude } from './FitaECG.jsx';
+import { amplitude } from './morfologia.js';
 
 // ECG de 12 derivações como o papel que sai da máquina: quatro colunas de três
 // derivações e uma tira de ritmo em D2 embaixo. O supra do caso é distribuído
@@ -57,7 +57,8 @@ export default function ECG12({ fc, supra = 0, paciente, minuto }) {
         const f = (t % rr) / rr;
         const val = amplitude(f, supra * der.st) * der.amp;
         const y = y0 - val * 10 * MM;
-        i === 0 ? ctx.moveTo(x0 + i, y) : ctx.lineTo(x0 + i, y);
+        if (i === 0) ctx.moveTo(x0 + i, y);
+        else ctx.lineTo(x0 + i, y);
       }
       ctx.stroke();
       ctx.fillStyle = '#17110E';

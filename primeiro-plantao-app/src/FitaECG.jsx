@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { amplitude } from './morfologia.js';
 
 // Fita de ECG: papel milimetrado que corre da direita para a esquerda,
 // com a agulha parada na ponta. 25 mm/s, 10 mm/mV, como no impresso.
@@ -7,28 +8,15 @@ const PX_S = 25 * MM;    // 25 mm/s
 const HZ = PX_S;         // 1 amostra por pixel
 const ALTURA = 170;
 
-// Morfologia PQRST em fração do intervalo RR. supra = elevação do segmento ST
-// em mV — é o supradesnivelamento de parede inferior deste caso, em D2.
-export function amplitude(f, supra) {
-  if (f < 0.08) return 0;
-  if (f < 0.18) return 0.14 * Math.sin(((f - 0.08) / 0.1) * Math.PI);   // onda P
-  if (f < 0.225) return 0;                                              // PR
-  if (f < 0.245) return -0.09 * ((f - 0.225) / 0.02);                   // Q
-  if (f < 0.265) return -0.09 + 1.35 * ((f - 0.245) / 0.02);            // R
-  if (f < 0.295) return 1.26 - 1.55 * ((f - 0.265) / 0.03);             // S
-  if (f < 0.34) return -0.29 + (0.29 + supra) * ((f - 0.295) / 0.045);  // volta ao ST
-  if (f < 0.44) return supra;                                           // segmento ST
-  if (f < 0.66) return supra + 0.34 * Math.sin(((f - 0.44) / 0.22) * Math.PI); // T apiculada
-  return 0;
-}
-
 export default function FitaECG({ fc, supra = 0.26, rotulo = 'II' }) {
   const canvasRef = useRef(null);
   const buffer = useRef([]);
   const fase = useRef(0);
   const passo = useRef(0);
   const fcRef = useRef(fc);
-  fcRef.current = fc;
+  // O laço de animação lê este ref a cada quadro; alimentá-lo no efeito evita
+  // escrever em ref durante a renderização.
+  useEffect(() => { fcRef.current = fc; }, [fc]);
 
   useEffect(() => {
     const cv = canvasRef.current;
@@ -91,7 +79,8 @@ export default function FitaECG({ fc, supra = 0.26, rotulo = 'II' }) {
         const v = buffer.current[n - visiveis + i];
         const x = larguraCss - visiveis + i;
         const y = meio - v * 10 * MM;
-        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
       }
       ctx.stroke();
 

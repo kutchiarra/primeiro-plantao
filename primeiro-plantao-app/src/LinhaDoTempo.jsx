@@ -115,7 +115,8 @@ export default function LinhaDoTempo({ linha, minFinal }) {
       pas.forEach((p, i) => {
         const px = X(Math.min(p.t, tMax));
         const py = yP - ((p.pas - min) / (max - min)) * h;
-        i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
       });
       ctx.stroke();
     }

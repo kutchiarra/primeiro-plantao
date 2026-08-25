@@ -65,7 +65,8 @@ export default function Tendencia({ historico, marcas, janelaMin = 30 }) {
         ctx.beginPath();
         pontos.forEach((p, j) => {
           const px = x(p.t), py = y(p[chave]);
-          j === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+          if (j === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
         });
         ctx.stroke();
         const ult = pontos[pontos.length - 1];
@@ -117,7 +118,8 @@ export default function Tendencia({ historico, marcas, janelaMin = 30 }) {
     let perto = historico[0];
     for (const p of historico) if (Math.abs(p.t - t) < Math.abs(perto.t - t)) perto = p;
     const px = ((perto.t - tIni) / Math.max(0.1, tFim - tIni)) * (largura - MARGEM - 4) + MARGEM;
-    setLeitura({ ...perto, px });
+    // largura vai junto no estado: assim a renderização não lê o ref.
+    setLeitura({ ...perto, px, largura });
   }
 
   const doseNoMinuto = leitura
@@ -135,7 +137,7 @@ export default function Tendencia({ historico, marcas, janelaMin = 30 }) {
           aria-label="Tendência de frequência cardíaca, pressão sistólica e saturação" />
         {leitura && (
           <div className="tendencia__leitura tabular"
-            style={{ left: Math.min(Math.max(leitura.px, 4), escala.current.largura - 132) }}>
+            style={{ left: Math.min(Math.max(leitura.px, 4), leitura.largura - 132) }}>
             <b>{Math.round(leitura.t)}′</b>
             <span style={{ color: '#17110E' }}>FC {leitura.fc}</span>
             <span style={{ color: '#1B3FA0' }}>PAS {leitura.pas}</span>

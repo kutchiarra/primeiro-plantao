@@ -9,7 +9,8 @@ const ALTURA = 96;
 export default function PainelAusculta({ manobra, v, audioCtx, aoFechar }) {
   const canvasRef = useRef(null);
   const vRef = useRef(v);
-  vRef.current = v;
+  // Mesmo motivo da FitaECG: o agendador de áudio lê o ref a cada batida.
+  useEffect(() => { vRef.current = v; }, [v]);
   const [mudo, setMudo] = useState(false);
   const ganhoRef = useRef(null);
 
@@ -67,7 +68,8 @@ export default function PainelAusculta({ manobra, v, audioCtx, aoFechar }) {
         } else {
           y = meio + Math.sin((x / passos) * 8 * Math.PI + fase * 6) * 8;
         }
-        x === 0 ? ctx2d.moveTo(x, y) : ctx2d.lineTo(x, y);
+        if (x === 0) ctx2d.moveTo(x, y);
+        else ctx2d.lineTo(x, y);
       }
       ctx2d.stroke();
     };
