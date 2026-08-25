@@ -1,0 +1,494 @@
+<title>Ordem de Serviço</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap">
+
+<style>
+:root{
+  --bg:#FAFBFB; --surface:#FFFFFF; --surface-2:#F0F4F4; --surface-3:#E7EDED;
+  --line:#DBE4E4; --line-strong:#BECBCB;
+  --ink:#0E1A1C; --ink-2:#3D4E50; --ink-3:#617375;
+  --accent:#00595E; --accent-2:#00787E; --accent-soft:#E0EFEE;
+  --ok:#1E7A4E; --warn:#8C5100; --crit:#B22B32;
+  --code-bg:#0D1A1C; --code-ink:#DDE9E7; --code-dim:#7E9694;
+  --shadow:0 1px 2px rgba(14,26,28,.05), 0 8px 24px -18px rgba(14,26,28,.35);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A1214; --surface:#101D20; --surface-2:#16272A; --surface-3:#1D3236;
+    --line:#223A3D; --line-strong:#2E4A4E;
+    --ink:#E7F0EF; --ink-2:#A9BEBC; --ink-3:#89A09D;
+    --accent:#4FC3B5; --accent-2:#7FD9CE; --accent-soft:#10312E;
+    --ok:#5DC08C; --warn:#DFA54E; --crit:#F0757C;
+    --code-bg:#06100F; --code-ink:#D3E3E1; --code-dim:#6C8582;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -20px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A1214; --surface:#101D20; --surface-2:#16272A; --surface-3:#1D3236;
+  --line:#223A3D; --line-strong:#2E4A4E;
+  --ink:#E7F0EF; --ink-2:#A9BEBC; --ink-3:#89A09D;
+  --accent:#4FC3B5; --accent-2:#7FD9CE; --accent-soft:#10312E;
+  --ok:#5DC08C; --warn:#DFA54E; --crit:#F0757C;
+  --code-bg:#06100F; --code-ink:#D3E3E1; --code-dim:#6C8582;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -20px rgba(0,0,0,.9);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{animation:none!important; transition:none!important} }
+
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Serif", Georgia, serif; font-size:17px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.page{max-width:1120px; margin:0 auto; padding:0 24px 96px}
+main{padding-top:56px}
+
+.eyebrow{
+  font-family:"IBM Plex Mono", monospace; font-size:11px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--accent); margin:0 0 16px;
+}
+h1{
+  font-family:"IBM Plex Sans", system-ui, sans-serif; font-weight:700;
+  font-size:clamp(36px,5.5vw,52px); line-height:1.03; letter-spacing:-.028em;
+  margin:0 0 18px; text-wrap:balance; max-width:18ch;
+}
+.lede{font-size:19.5px; line-height:1.55; color:var(--ink-2); max-width:62ch; margin:0 0 32px}
+.lede strong{color:var(--ink); font-weight:500}
+
+section{padding-top:58px; scroll-margin-top:20px}
+.sec-head{display:flex; gap:16px; align-items:baseline; border-top:2px solid var(--ink); padding-top:13px; margin-bottom:8px}
+.sec-num{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); font-weight:500}
+h2{font-family:"IBM Plex Sans",sans-serif; font-weight:600; font-size:28px; letter-spacing:-.021em; margin:0; line-height:1.18; text-wrap:balance}
+.sec-sub{color:var(--ink-3); font-size:16px; max-width:66ch; margin:0 0 28px}
+h3{font-family:"IBM Plex Sans",sans-serif; font-weight:600; font-size:18px; margin:34px 0 10px; letter-spacing:-.012em}
+h4{
+  font-family:"IBM Plex Mono",monospace; font-weight:500; font-size:11px;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3);
+  margin:28px 0 12px; padding-bottom:7px; border-bottom:1px solid var(--line);
+}
+p{margin:0 0 16px; max-width:68ch}
+ul,ol{max-width:66ch; padding-left:20px; margin:0 0 16px}
+li{margin-bottom:8px}
+li::marker{color:var(--ink-3)}
+code{
+  font-family:"IBM Plex Mono",monospace; font-size:.86em; background:var(--surface-2);
+  border:1px solid var(--line); border-radius:3px; padding:1px 5px;
+}
+a{color:var(--accent); text-underline-offset:2px}
+a:focus-visible, .card:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+
+/* ---------- estado atual ---------- */
+.feito{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); margin:20px 0 8px}
+.feito div{background:var(--surface); padding:13px 16px}
+.feito dt{font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--ok); margin-bottom:4px}
+.feito dd{margin:0; font-family:"IBM Plex Sans",sans-serif; font-size:14.5px; line-height:1.4}
+
+/* ---------- figura / diagrama ---------- */
+figure{margin:26px 0 30px; padding:0}
+figure svg{display:block; width:100%; max-width:100%; height:auto; color:var(--ink)}
+figcaption{
+  margin-top:12px; font-family:"IBM Plex Sans",sans-serif; font-size:13.5px;
+  color:var(--ink-3); max-width:70ch; line-height:1.5;
+}
+
+/* ---------- opções ---------- */
+.opcoes{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; margin:22px 0 10px}
+.opcao{background:var(--surface); border:1px solid var(--line); border-top:3px solid var(--line-strong); padding:16px 18px 18px; box-shadow:var(--shadow)}
+.opcao--reco{border-top-color:var(--accent)}
+.opcao h3{margin:0 0 4px; font-size:16.5px}
+.opcao .tag{font-family:"IBM Plex Mono",monospace; font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3)}
+.opcao--reco .tag{color:var(--accent)}
+.opcao p{font-size:14px; color:var(--ink-2); margin:8px 0 0}
+.opcao dl{display:flex; gap:16px; margin:12px 0 0; padding-top:10px; border-top:1px dashed var(--line)}
+.opcao dt{font-family:"IBM Plex Mono",monospace; font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3)}
+.opcao dd{margin:2px 0 0; font-family:"IBM Plex Mono",monospace; font-size:13px}
+
+/* ---------- fases ---------- */
+.fase{margin-top:36px}
+.fase__cab{display:flex; align-items:baseline; gap:12px; margin-bottom:4px}
+.fase__cab .n{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent)}
+.fase__cab h3{margin:0; font-size:17px}
+.fase__meta{margin:0 0 14px; color:var(--ink-3); font-size:14px; font-family:"IBM Plex Sans",sans-serif}
+
+.itens{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:0}
+.item{border-top:1px solid var(--line); padding:16px 0 16px 0; display:grid; grid-template-columns:64px minmax(0,1fr) auto; gap:18px; align-items:start}
+.item:last-child{border-bottom:1px solid var(--line)}
+.item__id{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-3); padding-top:2px}
+.item h4{margin:0 0 6px; padding:0; border:none; font-family:"IBM Plex Sans",sans-serif; font-size:16px; font-weight:600; letter-spacing:-.01em; text-transform:none; color:var(--ink)}
+.item p{margin:0 0 8px; font-size:14.5px; color:var(--ink-2); max-width:64ch}
+.item .aceite{
+  font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-3);
+  border-left:2px solid var(--line-strong); padding-left:10px; margin:0; display:block; max-width:64ch; line-height:1.5;
+}
+.item__lado{display:flex; flex-direction:column; align-items:flex-end; gap:5px; white-space:nowrap}
+.selo{
+  font-family:"IBM Plex Mono",monospace; font-size:9.5px; letter-spacing:.1em;
+  text-transform:uppercase; border:1px solid currentColor; padding:2px 7px;
+}
+.selo--pronto{color:var(--ok)} .selo--p{color:var(--ink-3)} .selo--m{color:var(--accent)} .selo--g{color:var(--warn)}
+.dep{font-family:"IBM Plex Mono",monospace; font-size:10px; color:var(--ink-3)}
+
+/* ---------- tabelas ---------- */
+.tw{overflow-x:auto; margin:18px 0 26px; border:1px solid var(--line); background:var(--surface)}
+table{border-collapse:collapse; width:100%; min-width:540px; font-family:"IBM Plex Sans",sans-serif; font-size:14px}
+th{
+  text-align:left; font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-3); font-weight:400; padding:11px 14px;
+  border-bottom:1px solid var(--line-strong); background:var(--surface-2); white-space:nowrap;
+}
+td{padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.45}
+tr:last-child td{border-bottom:none}
+td.num{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; white-space:nowrap}
+
+.callout{
+  display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:start;
+  background:var(--accent-soft); border:1px solid var(--line); border-left:3px solid var(--accent);
+  padding:16px 18px; margin:24px 0;
+}
+.callout .tag{font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); padding-top:4px; white-space:nowrap}
+.callout p{margin:0; font-size:15.5px; max-width:62ch}
+.callout p+p{margin-top:10px}
+
+footer{margin-top:76px; padding-top:22px; border-top:1px solid var(--line); font-family:"IBM Plex Sans",sans-serif; font-size:13.5px; color:var(--ink-3)}
+footer p{max-width:70ch; margin-bottom:8px}
+
+@media (max-width:640px){
+  .item{grid-template-columns:minmax(0,1fr); gap:8px}
+  .item__lado{flex-direction:row; align-items:center; justify-content:flex-start}
+}
+</style>
+
+<div class="page">
+<main>
+  <p class="eyebrow">Primeiro Plantão · engenharia e design · agosto 2026</p>
+  <h1>Ordem de Serviço</h1>
+  <p class="lede">Tudo que foi levantado nas últimas rodadas, organizado em <strong>quatro fases</strong>, com esforço, dependência e critério de aceite. Inclui a decisão de fazer ou comprar a figura do paciente — que é onde a conversa começou.</p>
+
+  <!-- ============================ 00 ============================ -->
+  <section id="pronto">
+    <div class="sec-head"><span class="sec-num">00</span><h2>O que já está de pé</h2></div>
+    <p class="sec-sub">Não é backlog: é a base contra a qual o resto é priorizado.</p>
+    <dl class="feito">
+      <div><dt>Pronto</dt><dd>Motor farmacodinâmico com curva por dose e interação por caso</dd></div>
+      <div><dt>Pronto</dt><dd>Dois casos jogáveis com gabarito e debriefing determinístico</dd></div>
+      <div><dt>Pronto</dt><dd>Prancha do paciente com sinais clínicos ligados aos vitais</dd></div>
+      <div><dt>Pronto</dt><dd>Ausculta sintetizada em Web Audio, seguindo FC e FR ao vivo</dd></div>
+      <div><dt>Pronto</dt><dd>ECG de 12 derivações desenhado a partir da morfologia do caso</dd></div>
+      <div><dt>Pronto</dt><dd>Cursos, aulas, turmas e prova com roster — em armazenamento local</dd></div>
+      <div><dt>Pronto</dt><dd>Contraste AA nos rótulos e alvos de toque acima de 44 px</dd></div>
+      <div><dt>Pronto</dt><dd>Linha do tempo do atendimento no debriefing, com as janelas do caso</dd></div>
+      <div><dt>Pronto</dt><dd>Blueprint de dados e system prompt do paciente</dd></div>
+    </dl>
+  </section>
+
+  <!-- ============================ 01 ============================ -->
+  <section id="figura">
+    <div class="sec-head"><span class="sec-num">01</span><h2>A figura do paciente: fazer ou comprar</h2></div>
+    <p class="sec-sub">O atlas 3D que você mandou é a referência errada — e entender por quê economiza meses.</p>
+
+    <p>Aquele aplicativo existe para <em>estudar músculo</em>: ele mostra um écorché, corpo sem pele, cada feixe nomeado. O seu produto é outro: o aluno precisa <em>examinar uma pessoa</em>. Paciente de pronto-socorro tem pele, avental, palidez, suor e urticária — não tem peitoral maior exposto. Copiar o atlas deixaria o app mais impressionante numa captura de tela e pior na mesa de trabalho.</p>
+
+    <p>A referência certa é o <strong>atlas clínico ilustrado</strong> — a linguagem do Netter, que todo estudante de medicina reconhece: contorno de tinta com lavagem de cor por cima. Foi para lá que a prancha foi, e é por isso que ela agora tem clavícula, esterno, arcos costais, linha hemiclavicular e os quatro focos de ausculta marcados onde eles ficam de verdade.</p>
+
+    <figure>
+      <svg viewBox="0 0 880 330" role="img" aria-label="A aparência do paciente é calculada por uma camada de sinais clínicos que alimenta a apresentação; só a caixa de apresentação muda entre as três opções de realismo.">
+        <defs>
+          <marker id="seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <polygon points="0,0 10,5 0,10" fill="currentColor"/>
+          </marker>
+        </defs>
+        <g font-family="IBM Plex Sans, sans-serif" font-size="13" fill="currentColor">
+          <!-- entradas -->
+          <rect x="8" y="40" width="176" height="62" fill="none" stroke="currentColor" stroke-width="1.2"/>
+          <text x="24" y="66" font-weight="600">Caso</text>
+          <text x="24" y="86" font-size="11.5" opacity=".7">tom de pele, sinais fixos</text>
+
+          <rect x="8" y="160" width="176" height="62" fill="none" stroke="currentColor" stroke-width="1.2"/>
+          <text x="24" y="186" font-weight="600">Motor de vitais</text>
+          <text x="24" y="206" font-size="11.5" opacity=".7">PA · SpO₂ · dor · FR</text>
+
+          <!-- camada de sinais -->
+          <rect x="272" y="70" width="196" height="122" fill="none" stroke="currentColor" stroke-width="2"/>
+          <text x="292" y="98" font-weight="600">Camada de sinais</text>
+          <text x="292" y="122" font-size="11.5" font-family="IBM Plex Mono, monospace" opacity=".8">palidez   0–1</text>
+          <text x="292" y="140" font-size="11.5" font-family="IBM Plex Mono, monospace" opacity=".8">sudorese  0–1</text>
+          <text x="292" y="158" font-size="11.5" font-family="IBM Plex Mono, monospace" opacity=".8">cianose   0–1</text>
+          <text x="292" y="176" font-size="11.5" font-family="IBM Plex Mono, monospace" opacity=".8">urticária 0–1</text>
+
+          <!-- apresentacao -->
+          <rect x="556" y="16" width="316" height="298" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="5 4" opacity=".55"/>
+          <text x="572" y="40" font-size="11" font-family="IBM Plex Mono, monospace" letter-spacing="1.4" opacity=".65">APRESENTAÇÃO · TROCÁVEL</text>
+
+          <rect x="576" y="56" width="276" height="62" fill="none" stroke="#00787E" stroke-width="2.4"/>
+          <text x="594" y="82" font-weight="600" fill="#00787E">SVG em camadas</text>
+          <text x="594" y="102" font-size="11.5" fill="#00787E" opacity=".85">hoje · 0 KB de asset · edita no código</text>
+
+          <rect x="576" y="140" width="276" height="62" fill="none" stroke="currentColor" stroke-width="1.2"/>
+          <text x="594" y="166" font-weight="600">Sprite pré-renderizado</text>
+          <text x="594" y="186" font-size="11.5" opacity=".7">Blender → PNG em camadas + máscara</text>
+
+          <rect x="576" y="224" width="276" height="62" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".55"/>
+          <text x="594" y="250" font-weight="600" opacity=".7">Malha 3D em WebGL</text>
+          <text x="594" y="270" font-size="11.5" opacity=".55">three.js + GLB com regiões marcadas</text>
+
+          <!-- setas -->
+          <line x1="184" y1="71" x2="264" y2="110" stroke="currentColor" stroke-width="1.4" marker-end="url(#seta)"/>
+          <text x="190" y="88" font-size="11" font-family="IBM Plex Mono, monospace" opacity=".7">aparência</text>
+
+          <line x1="184" y1="191" x2="264" y2="152" stroke="currentColor" stroke-width="1.4" marker-end="url(#seta)"/>
+          <text x="188" y="176" font-size="11" font-family="IBM Plex Mono, monospace" opacity=".7">a cada 500 ms</text>
+
+          <line x1="468" y1="131" x2="568" y2="90" stroke="#00787E" stroke-width="1.8" marker-end="url(#seta)"/>
+          <line x1="468" y1="131" x2="568" y2="170" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#seta)"/>
+          <line x1="468" y1="131" x2="568" y2="252" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 4" opacity=".55" marker-end="url(#seta)"/>
+          <text x="470" y="118" font-size="11" font-family="IBM Plex Mono, monospace" opacity=".8">mesma interface</text>
+        </g>
+      </svg>
+      <figcaption>O que decide o realismo é só a caixa da direita. Caso e motor entregam quatro números entre 0 e 1; qualquer uma das três apresentações consome os mesmos quatro números. Trocar de opção não toca no motor, no gabarito nem no debriefing — por isso essa decisão pode esperar sem travar nada.</figcaption>
+    </figure>
+
+    <div class="opcoes">
+      <div class="opcao opcao--reco">
+        <span class="tag">Hoje · mantenha</span>
+        <h3>SVG em camadas</h3>
+        <p>Contorno, lavagem de pele, avental e sinais clínicos desenhados no próprio código. Escala sem perder nitidez, pesa zero e muda de tom de pele por caso com uma linha.</p>
+        <dl><div><dt>Esforço</dt><dd>feito</dd></div><div><dt>Peso</dt><dd>0 KB</dd></div></dl>
+      </div>
+      <div class="opcao">
+        <span class="tag">Se precisar de foto-realismo</span>
+        <h3>Sprite pré-renderizado</h3>
+        <p>Modelar ou licenciar uma malha, renderizar no Blender em camadas (pele, avental, sinais) e exportar PNG com máscara de regiões. Você ganha 90% da aparência de 3D sem WebGL rodando no celular do aluno.</p>
+        <dl><div><dt>Esforço</dt><dd>2–3 sem</dd></div><div><dt>Peso</dt><dd>~600 KB</dd></div></dl>
+      </div>
+      <div class="opcao">
+        <span class="tag">Só se rotação for requisito</span>
+        <h3>Malha 3D em WebGL</h3>
+        <p>three.js com GLB de anatomia licenciada. Custa desempenho em aparelho fraco, exige marcar região por região no mesh e briga com a identidade de papel do resto do app.</p>
+        <dl><div><dt>Esforço</dt><dd>6–10 sem</dd></div><div><dt>Peso</dt><dd>5–15 MB</dd></div></dl>
+      </div>
+    </div>
+
+    <h4>Se for pelo caminho do 3D, de onde vem o modelo</h4>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Fonte</th><th>Licença</th><th>Serve para</th></tr></thead>
+        <tbody>
+          <tr><td>BodyParts3D</td><td>CC BY-SA</td><td>Malhas anatômicas separadas por estrutura; base gratuita para renderizar sprite</td></tr>
+          <tr><td>Z-Anatomy</td><td>CC BY-SA, projeto em Blender</td><td>Atlas completo já montado; ótimo para render, exige atribuição e compartilhar igual</td></tr>
+          <tr><td>BioDigital Human</td><td>Comercial, API de embed</td><td>Pular a produção inteira; custo por assento e dependência de terceiro</td></tr>
+          <tr><td>Ilustrador médico</td><td>Encomenda</td><td>Paciente com pele e avental, no seu estilo — é o que casa com a identidade atual</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <span class="tag">Atenção</span>
+      <div><p>Licença <strong>CC BY-SA</strong> é viral: obriga a redistribuir derivados sob a mesma licença. Renderizar uma imagem a partir do modelo e vender acesso ao app costuma ser aceitável, mas é decisão de advogado, não de engenheiro. Se o produto é pago, o caminho limpo é encomendar a ilustração ou licenciar comercialmente.</p></div>
+    </div>
+  </section>
+
+  <!-- ============================ 02 ============================ -->
+  <section id="fases">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Backlog em quatro fases</h2></div>
+    <p class="sec-sub">Ordenado por dependência e por impacto em receita — não por gosto. P: até 1 dia. M: 2 a 4 dias. G: 1 a 2 semanas.</p>
+
+    <div class="fase">
+      <div class="fase__cab"><span class="n">Fase 1</span><h3>Destravar uso real</h3></div>
+      <p class="fase__meta">Sem isso, o aluno abandona antes do primeiro debriefing — e é o debriefing que converte.</p>
+      <ul class="itens">
+        <li class="item">
+          <span class="item__id">F1-01</span>
+          <div>
+            <h4>Monitor fixo no celular</h4>
+            <p>Hoje, em tela estreita, a coluna do instrumento empilha embaixo da conversa: o aluno conversa sem ver os vitais, que é justamente o que dá tensão ao caso.</p>
+            <span class="aceite">Aceite: em 375 px de largura, FC, PA, SpO₂ e uma fita de 40 px ficam visíveis durante toda a conversa.</span>
+          </div>
+          <div class="item__lado"><span class="selo selo--m">M</span></div>
+        </li>
+        <li class="item">
+          <span class="item__id">F1-02</span>
+          <div>
+            <h4>Onboarding de três dicas</h4>
+            <p>O usuário não descobre sozinho que o relógio corre, que exame custa e que dá para clicar no corpo. Descobre no debriefing, quando já perdeu.</p>
+            <span class="aceite">Aceite: três dicas sequenciais na primeira sessão, puláveis, nunca repetidas.</span>
+          </div>
+          <div class="item__lado"><span class="selo selo--p">P</span></div>
+        </li>
+        <li class="item">
+          <span class="item__id">F1-03</span>
+          <div>
+            <h4>Confirmação e desfazer na prescrição</h4>
+            <p>Injetar 6 mg de morfina só produz uma linha no chat. Clique errado vira frustração em vez de aprendizado.</p>
+            <span class="aceite">Aceite: aviso com "cancelar antes de administrar" por 5 s; cancelar remove a dose e devolve o tempo.</span>
+          </div>
+          <div class="item__lado"><span class="selo selo--p">P</span></div>
+        </li>
+        <li class="item">
+          <span class="item__id">F1-04</span>
+          <div>
+            <h4>Auditoria de acessibilidade</h4>
+            <p>Contraste e alvos de toque já foram corrigidos. Falta o resto: navegação completa por teclado, alarme anunciado por leitor de tela, foco visível em todo controle.</p>
+            <span class="aceite">Aceite: percorrer um caso inteiro só com teclado; alarme dispara <code>aria-live="assertive"</code>.</span>
+          </div>
+          <div class="item__lado"><span class="selo selo--m">M</span><span class="dep">parcial</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="fase">
+      <div class="fase__cab"><span class="n">Fase 2</span><h3>Parecer produto, não protótipo</h3></div>
+      <p class="fase__meta">O que sustenta cobrar assinatura e o que o professor vê antes de decidir adotar.</p>
+      <ul class="itens">
+        <li class="item">
+          <span class="item__id">F2-01</span>
+          <div>
+            <h4>Hierarquia da coluna do instrumento</h4>
+            <p>Fita, oito vitais, três faixas de tendência, fármacos em ação, abas e catálogo — tudo com o mesmo peso numa pilha rolável.</p>
+            <span class="aceite">Aceite: monitor fixo no topo da coluna; tendência e "em ação" colapsáveis com preferência lembrada.</span>
+          </div>
+          <div class="item__lado"><span class="selo selo--m">M</span></div>
+        </li>
+        <li class="item">
+          <span class="item__id">F2-02</span>
+          <div>
+            <h4>Vitais em dois níveis</h4>
+            <p>FC, PA, SpO₂ e dor decidem conduta; EtCO₂, PAM, FR e temperatura são contexto. Hoje têm o mesmo tamanho.</p>
+            <span class="aceite">Aceite: quatro primários com o dobro do corpo tipográfico dos secundários.</span>
+          </div>
+          <div class="item__lado"><span class="selo selo--p">P</span></div>
+        </li>
+        <li class="item">
+          <span class="item__id">F2-03</span>
+          <div>
+            <h4>Marca na tela de trabalho</h4>
+            <p>Não há nome nem logo no atendimento — a tela onde o usuário passa 90% do tempo não diz de quem é.</p>
+            <span class="aceite">Aceite: lockup discreto no rodapé, sem competir com o relógio.</span>
+          </div>
+          <div class="item__lado"><span class="selo selo--p">P</span></div>
+        </li>
+        <li class="item">
+          <span class="item__id">F2-04</span>
+          <div>
+            <h4>Cota e paywall visíveis</h4>
+            <p>O blueprint define 2 casos grátis por mês; a interface não mostra nem cobra. O muro deve aparecer depois do primeiro debriefing, nunca antes.</p>
+            <span class="aceite">Aceite: contador na sala; ao esgotar, tela de assinatura que mostra o que o próximo caso ensina.</span>
+          </div>
+          <div class="item__lado"><span class="selo selo--m">M</span><span class="dep">depende de F3-01</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="fase">
+      <div class="fase__cab"><span class="n">Fase 3</span><h3>Sair do navegador</h3></div>
+      <p class="fase__meta">Hoje curso, turma e progresso vivem em <code>localStorage</code>. Nada disso sobrevive a trocar de aparelho — e é o que o professor precisa que sobreviva.</p>
+      <ul class="itens">
+        <li class="item">
+          <span class="item__id">F3-01</span>
+          <div>
+            <h4>Supabase com o schema do blueprint</h4>
+            <p>Aplicar o DDL, ligar RLS, publicar os RPCs <code>start_session</code> e <code>entrar_na_turma</code>.</p>
+            <span class="aceite">Aceite: usuário anônimo não lê nenhuma tabela de gabarito; a terceira sessão do mês é recusada no servidor.</span>
+          </div>
+          <div class="item__lado"><span class="selo selo--m">M</span></div>
+        </li>
+        <li class="item">
+          <span class="item__id">F3-02</span>
+          <div>
+            <h4>Gemini na fala do paciente</h4>
+            <p>Substituir o casamento por gatilho pela chamada com os três blocos do prompt. O contrato de saída já está definido.</p>
+            <span class="aceite">Aceite: 20 turnos seguidos com JSON válido; nenhuma resposta revela o diagnóstico.</span>
+          </div>
+          <div class="item__lado"><span class="selo selo--m">M</span><span class="dep">depende de F3-01</span></div>
+        </li>
+        <li class="item">
+          <span class="item__id">F3-03</span>
+          <div>
+            <h4>Curso, turma e roster no servidor</h4>
+            <p>Encerrar a exportação manual de JSON entre aparelhos: o aluno entra pelo código e o resultado cai na turma do professor.</p>
+            <span class="aceite">Aceite: aluno em outro aparelho aparece no roster sem ninguém importar arquivo.</span>
+          </div>
+          <div class="item__lado"><span class="selo selo--g">G</span><span class="dep">depende de F3-01</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="fase">
+      <div class="fase__cab"><span class="n">Fase 4</span><h3>Diferenciar</h3></div>
+      <p class="fase__meta">Só depois que o ciclo básico estiver de pé. Cada item aqui é argumento de venda, não fundação.</p>
+      <ul class="itens">
+        <li class="item">
+          <span class="item__id">F4-01</span>
+          <div>
+            <h4>Vista posterior e foco selecionável</h4>
+            <p>Ausculta pulmonar de verdade se faz nas costas — hoje o alvo está na frente, o que é semiologicamente errado. E clicar em A, P, T ou M deveria mudar o som.</p>
+            <span class="aceite">Aceite: alternar frente e costas; sopro audível só no foco correto.</span>
+          </div>
+          <div class="item__lado"><span class="selo selo--m">M</span></div>
+        </li>
+        <li class="item">
+          <span class="item__id">F4-02</span>
+          <div>
+            <h4>Painel do professor</h4>
+            <p>Não uma lista de notas: o mapa de onde a turma errou junto. "68% não perguntou sobre a interação" vira a aula da semana seguinte.</p>
+            <span class="aceite">Aceite: cinco indicadores por turma, todos clicáveis até a sessão que os gerou.</span>
+          </div>
+          <div class="item__lado"><span class="selo selo--g">G</span><span class="dep">depende de F3-03</span></div>
+        </li>
+        <li class="item">
+          <span class="item__id">F4-03</span>
+          <div>
+            <h4>Modo plantão noturno</h4>
+            <p>Não um tema escuro invertido, que mataria a metáfora do papel: papel âmbar sob luz baixa, tinta mais quente, fita com menos brilho.</p>
+            <span class="aceite">Aceite: legibilidade AA mantida nos dois modos.</span>
+          </div>
+          <div class="item__lado"><span class="selo selo--p">P</span></div>
+        </li>
+        <li class="item">
+          <span class="item__id">F4-04</span>
+          <div>
+            <h4>Biblioteca de dez casos</h4>
+            <p>Dois casos não sustentam assinatura mensal. Dez cobrem um semestre de liga acadêmica.</p>
+            <span class="aceite">Aceite: cada caso com revisor identificado e guideline citado.</span>
+          </div>
+          <div class="item__lado"><span class="selo selo--g">G</span></div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================ 03 ============================ -->
+  <section id="engenharia">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Regras de engenharia</h2></div>
+    <p class="sec-sub">Três convenções que evitam retrabalho — a primeira porque há mais de uma frente mexendo no mesmo código.</p>
+
+    <h4>1 · Duas frentes, um contrato</h4>
+    <p>O app tem duas frentes ativas: avaliação/prova e apresentação/figura. Elas se cruzam em <code>Atendimento.jsx</code> e <code>estilo.css</code>. Regra: componente novo em arquivo novo; bloco de CSS demarcado por comentário de seção; nada de renomear token existente sem avisar.</p>
+
+    <h4>2 · O motor é puro, a tela é descartável</h4>
+    <p>O estado fisiológico é função pura do tempo e das administrações — mesma linha do tempo, mesmos números. Isso é o que torna a sessão reproduzível, o debriefing auditável e a figura trocável. Nenhuma decisão de apresentação pode escrever no motor.</p>
+
+    <h4>3 · Gabarito nunca no cliente</h4>
+    <p>Vale para as tabelas de resultado, para <code>diagnostico_final</code> e para <code>nota_do_preceptor</code>. RLS filtra linha, não coluna: onde a coluna sensível divide tabela com dado que o aluno lê, a saída é view.</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>Risco</th><th>Probabilidade</th><th>O que fazer antes</th></tr></thead>
+        <tbody>
+          <tr><td>Conteúdo clínico errado publicado</td><td class="num">média</td><td>Revisor identificado por caso, guideline citado, data de revisão</td></tr>
+          <tr><td>Custo de LLM por sessão fora de controle</td><td class="num">alta</td><td><code>usage_counters</code> com teto por usuário e modelo rápido no paciente</td></tr>
+          <tr><td>Aluno perde resultado ao trocar de aparelho</td><td class="num">alta hoje</td><td>F3-01 e F3-03; é a maior fragilidade atual</td></tr>
+          <tr><td>Licença de asset 3D contaminar o produto</td><td class="num">baixa</td><td>Só entrar em CC BY-SA com parecer; preferir encomenda</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <p>Documento companheiro do blueprint de dados. Protótipo jogável: <code>primeiro-plantao/leito-4.html</code>. Aplicativo React: <code>primeiro-plantao-app/</code>, porta 5177.</p>
+    <p>Esforços são estimativa de uma pessoa trabalhando sozinha, com o código no estado de hoje.</p>
+  </footer>
+</main>
+</div>

@@ -1,0 +1,1225 @@
+<title>Leito 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+
+<style>
+:root{
+  --papel:#FAF3F0; --papel-2:#F4E8E3; --mesa:#EADCD6; --fita:#FCF1EC;
+  --linha:#E4D6D0; --linha-forte:#CDB8B0;
+  --tinta:#191411; --tinta-2:#4C423C; --tinta-3:#74645C;
+  --caneta:#1B3FA0; --caneta-fundo:#E8EDF9; --carimbo:#B8241C; --atencao:#8F5B12; --verde:#2C6A4A;
+  --ui:'Archivo',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace; --voz:'Newsreader',Georgia,serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--mesa);color:var(--tinta);font-family:var(--ui);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--caneta);outline-offset:2px}
+.tabular{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.rotulo{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--tinta-3);margin:0}
+.carimbo{display:inline-block;font-family:var(--mono);font-size:9.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--carimbo);border:1px solid var(--carimbo);padding:2px 7px;margin-bottom:10px}
+.un{font-family:var(--mono);font-size:10px;color:var(--tinta-3);letter-spacing:.08em}
+.vazio{color:var(--tinta-3);font-size:13.5px;margin:12px 2px}
+
+.plantao{max-width:1340px;margin:0 auto;min-height:100vh;background:var(--papel);border-left:1px solid var(--linha-forte);border-right:1px solid var(--linha-forte);display:flex;flex-direction:column}
+.plantao.critico{box-shadow:inset 0 3px 0 var(--carimbo)}
+
+.papeleta{position:relative;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:end;padding:24px 30px 16px;border-bottom:3px double var(--linha-forte)}
+.papeleta h1{font-size:28px;font-weight:600;letter-spacing:-.022em;margin:0 0 4px}
+.papeleta .linha{margin:0;font-size:12.5px;color:var(--tinta-2)}
+.papeleta .queixa{margin:8px 0 0;font-family:var(--voz);font-size:17px;font-style:italic}
+.campos{display:flex;margin:0}
+.campos>div{padding:0 18px;border-left:1px solid var(--linha);text-align:right;min-width:138px}
+.campos>div:first-child{border-left:none}
+.campos dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--tinta-3);margin-bottom:4px}
+.campos dd{margin:0}
+.campos .grande{font-size:24px;line-height:1.1;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.campos .nota{font-size:10.5px;color:var(--tinta-3);font-family:var(--mono);margin-top:3px}
+.estado.atencao{color:var(--atencao)} .estado.crit{color:var(--carimbo)}
+
+.mesa{display:grid;grid-template-columns:minmax(0,1fr) 470px;flex:1}
+.coluna{padding:20px 30px 24px;display:flex;flex-direction:column;min-width:0}
+.instr-col{border-left:1px solid var(--linha-forte);background:var(--papel-2);padding:20px 24px 24px}
+
+.conversa{flex:1;overflow-y:auto;margin:10px 0 4px;display:flex;flex-direction:column;gap:13px;max-height:min(46vh,420px);min-height:200px;padding-right:4px}
+.fala{display:grid;grid-template-columns:38px minmax(0,1fr);gap:11px;margin:0}
+.fala .hora{font-family:var(--mono);font-size:10px;color:var(--tinta-3);padding-top:4px}
+.fala p{margin:0}
+.fala.paciente p{font-family:var(--voz);font-size:17px;line-height:1.5}
+.fala.medico p{border-left:2px solid var(--caneta);padding-left:12px;color:var(--caneta)}
+.fala.exame p,.fala.conduta p{font-family:var(--mono);font-size:12px;line-height:1.5;border-top:1px solid var(--linha);border-bottom:1px solid var(--linha);padding:7px 0;color:var(--tinta-2)}
+.fala.conduta p{color:var(--verde)}
+.fala.alarme p{font-family:var(--mono);font-size:12px;color:var(--carimbo);border-left:2px solid var(--carimbo);padding-left:12px}
+
+.atalhos{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0}
+.atalho{background:none;border:1px solid var(--linha-forte);color:var(--caneta);font-size:12.5px;padding:5px 10px}
+.atalho:hover{background:var(--caneta-fundo);border-color:var(--caneta)}
+.pergunta{display:flex;margin-top:12px;border-bottom:1.5px solid var(--tinta)}
+.pergunta input{flex:1;background:none;border:none;padding:10px 2px;font-size:15px;color:var(--caneta)}
+.pergunta input:focus{outline:none}
+.pergunta input::placeholder{color:var(--tinta-3)}
+.pergunta button{background:var(--caneta);color:#fff;border:none;padding:9px 18px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+
+.manobras{margin-top:20px}
+.mapa{display:grid;grid-template-columns:minmax(170px,236px) minmax(0,1fr);gap:20px;align-items:start;margin-top:10px}
+.mapa svg{width:100%;max-width:236px;height:auto;display:block}
+.pele{stroke:#6E482E;stroke-width:1.1;stroke-linejoin:round;stroke-opacity:.75}
+.pele .tronco,.pele .cabeca,.pele .pescoco{fill:url(#pp-pele)}
+.pele .membro-lavagem{fill:none;stroke:url(#pp-pele);stroke-width:17;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1}
+.anatomia{fill:none;stroke:var(--tinta);stroke-width:.9;stroke-opacity:.22;stroke-linecap:round}
+.anatomia .alba{stroke-opacity:.16}
+.anatomia .ecm{stroke-opacity:.18}
+.anatomia .eixo{stroke-dasharray:2 4;stroke-opacity:.12}
+.rosto{fill:none;stroke:var(--tinta);stroke-width:1.2;stroke-linecap:round;stroke-opacity:.55}
+.rosto .cabelo{fill:#4A3A31;stroke:none;opacity:.85}
+.avental{fill:url(#pp-avental);stroke:#9BAEBD;stroke-width:.9;opacity:.96}
+.dobra{fill:none;stroke:#9BAEBD;stroke-width:.8;opacity:.5}
+.focos{opacity:.4;transition:opacity .15s}
+.mapa svg:has([data-m="cardio"]:hover) .focos,.mapa svg:has([data-m="cardio"]:focus-visible) .focos{opacity:1}
+.focos circle{fill:var(--caneta)}
+.focos text{font-family:var(--mono);font-size:8px;font-weight:500;fill:var(--caneta)}
+.inspecao{list-style:none;margin:0 0 12px;padding:0;display:flex;flex-wrap:wrap;gap:5px}
+.inspecao li{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--carimbo);border:1px solid var(--carimbo);padding:2px 7px}
+.ponto{cursor:pointer}
+.area{fill:var(--caneta);fill-opacity:.07;stroke:var(--caneta);stroke-width:1;stroke-opacity:.55;transition:fill-opacity .15s,stroke-opacity .15s}
+.ponto:hover .area,.ponto:focus-visible .area{fill-opacity:.2;stroke-opacity:1}
+.ponto:focus-visible{outline:none}
+.ponto:focus-visible .area{stroke-width:2.2}
+.ponto.feita .area{stroke:var(--verde);fill:var(--verde)}
+.tique{fill:none;stroke:var(--verde);stroke-width:1.8;stroke-linecap:round}
+.mapa-lado{padding-top:4px}
+.dica{margin:0 0 10px;font-size:13px;color:var(--tinta-3);line-height:1.45;min-height:62px}
+.dica b{display:block;font-size:15.5px;color:var(--tinta);font-weight:600}
+.dica i{display:block;font-style:normal;font-size:12.5px;color:var(--tinta-2);margin:1px 0 4px}
+.dica em{font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--caneta)}
+.ausculta{margin-top:10px;border:1px solid var(--linha-forte);background:var(--fita)}
+.ausculta .topo{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border-bottom:1px solid var(--linha-forte);font-size:13px}
+.ausculta canvas{display:block;width:100%}
+.ausculta .achado{padding:8px 10px;margin:0;font-family:var(--mono);font-size:12px;color:var(--tinta-2);border-top:1px solid var(--linha)}
+
+.instrumento{border:1px solid var(--linha-forte);background:var(--fita)}
+.critico .instrumento{border-color:var(--carimbo)}
+canvas.fita{display:block;width:100%}
+.vitais{display:grid;grid-template-columns:repeat(4,1fr);margin:0;border-top:1px solid var(--linha-forte)}
+.vitais>div{padding:9px 6px 8px;border-left:1px solid var(--linha);text-align:center}
+.vitais>div:nth-child(4n+1){border-left:none}
+.vitais>div:nth-child(n+5){border-top:1px solid var(--linha)}
+.vitais dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--tinta-3)}
+.vitais dd{margin:2px 0 0;font-family:var(--mono);font-size:22px;line-height:1.1;font-variant-numeric:tabular-nums}
+.vitais dd.un{font-size:9.5px;margin-top:2px}
+.vitais .fora dd{color:var(--carimbo);animation:pulsar 2.6s ease-in-out infinite}
+@keyframes pulsar{0%,100%{opacity:1}50%{opacity:.45}}
+
+.tendencia{border-top:1px solid var(--linha-forte)}
+.tend-legenda{display:flex;align-items:center;gap:12px;padding:7px 10px 0}
+.tend-legenda em{font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.08em}
+.tend-legenda em::before{content:'';display:inline-block;width:10px;height:2px;background:currentColor;margin-right:5px;vertical-align:middle}
+.tend-dica{margin-left:auto;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--tinta-3)}
+.tend-papel{position:relative}
+.tend-papel canvas{display:block;width:100%}
+.leitura{position:absolute;top:6px;pointer-events:none;background:var(--papel);border:1px solid var(--linha-forte);padding:6px 9px;display:flex;flex-direction:column;gap:2px;font-family:var(--mono);font-size:10.5px;line-height:1.3;min-width:92px}
+.leitura b{font-size:11px;color:var(--tinta-3);font-weight:500}
+.leitura em{font-style:normal;color:#A8695A;font-size:9.5px;margin-top:2px}
+
+.emacao{margin-top:16px}
+.emacao .rotulo{display:block;border-top:1px solid var(--linha-forte);padding-top:12px;margin-bottom:6px}
+.droga{border-top:1px solid var(--linha);padding:9px 0 10px}
+.droga.fim{opacity:.45}
+.droga header{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.droga header b{font-size:13.5px}
+.droga header span{font-family:var(--mono);font-size:10px;color:var(--tinta-3)}
+.droga .barra{height:3px;background:var(--linha);margin:6px 0}
+.droga .barra i{display:block;height:100%;background:var(--verde);transition:width .4s linear}
+.droga .efeito{font-family:var(--mono);font-size:11px;color:var(--tinta-2);margin:0}
+.droga .inter{margin:5px 0 0;font-family:var(--mono);font-size:10px;color:var(--carimbo);border-left:2px solid var(--carimbo);padding-left:8px}
+
+.pedidos{margin-top:16px;display:flex;flex-direction:column;min-height:0}
+.abas{display:flex;gap:18px;border-top:1px solid var(--linha-forte);border-bottom:1px solid var(--linha-forte);padding-top:12px}
+.abas button{background:none;border:none;padding:0 0 9px;margin-bottom:-1px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--tinta-3);border-bottom:2px solid transparent}
+.abas button[aria-selected=true]{color:var(--tinta);border-bottom-color:var(--tinta)}
+.badge{display:inline-block;font-style:normal;background:var(--carimbo);color:#fff;border-radius:99px;padding:0 5px;margin-left:6px;font-size:9.5px}
+.catalogo{list-style:none;margin:0;padding:0;overflow-y:auto;max-height:320px}
+.catalogo li+li{border-top:1px solid var(--linha)}
+.catalogo li.aberto{background:var(--papel)}
+.catalogo>li>button{width:100%;background:none;border:none;padding:10px 2px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;text-align:left;align-items:baseline}
+.catalogo>li>button:hover:not(:disabled){background:var(--caneta-fundo)}
+.catalogo>li>button:disabled{cursor:default;color:var(--tinta-3)}
+.cat-nome{font-size:14px}
+.cat-meta{font-family:var(--mono);font-size:11px;color:var(--tinta-3);white-space:nowrap}
+.cat-estado{grid-column:1/-1;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--caneta)}
+.doses{padding:2px 4px 12px}
+.doses p{margin:0 0 9px;font-size:12.5px;color:var(--tinta-2);line-height:1.45}
+.doses div{display:flex;flex-wrap:wrap;gap:6px}
+.doses button{background:var(--caneta);color:#fff;border:none;padding:7px 12px;font-family:var(--mono);font-size:12px;text-align:left}
+.doses button em{display:block;font-style:normal;font-size:9px;opacity:.75;letter-spacing:.08em;text-transform:uppercase}
+
+.resultados{overflow-y:auto;max-height:340px;padding-top:4px}
+.laudo{border:1px solid var(--linha-forte);background:var(--papel);padding:10px 12px;margin-top:10px;animation:entrar .28s ease-out}
+.laudo.espera{border-style:dashed}
+.laudo header{display:flex;align-items:baseline;gap:8px;font-size:13px}
+.laudo header span:first-child{font-family:var(--mono);font-size:10px;color:var(--tinta-3)}
+.laudo header b{flex:1;font-weight:500}
+.laudo .texto{margin:8px 0 0;font-family:var(--mono);font-size:12px;line-height:1.55}
+.laudo .abrir{margin-top:8px;background:none;border:1px solid var(--caneta);color:var(--caneta);font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px}
+.laudo .abrir:hover{background:var(--caneta);color:#fff}
+.laudo .barra{height:2px;background:var(--linha);margin-top:9px}
+.laudo .barra i{display:block;height:100%;background:var(--caneta);transition:width .5s linear}
+.flag{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;border:1px solid currentColor;padding:1px 6px;color:var(--tinta-3)}
+.flag.critico,.flag.alto{color:var(--carimbo)} .flag.normal{color:var(--verde)}
+canvas.ecg12{display:block;width:100%;margin-top:10px;border:1px solid var(--linha-forte)}
+
+.rodape{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:13px 30px;border-top:3px double var(--linha-forte);background:var(--papel);position:sticky;bottom:0}
+.rodape p{margin:0;font-size:13px;color:var(--tinta-2)}
+.critico .rodape p{color:var(--carimbo)}
+.encerrar{background:var(--tinta);color:var(--papel);border:none;padding:11px 22px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.encerrar:hover{background:var(--caneta)}
+
+.folha{position:fixed;inset:0;background:rgba(25,20,17,.5);display:grid;place-items:center;padding:24px;z-index:20}
+.folha form{background:var(--papel);border:1px solid var(--linha-forte);padding:26px 28px;width:min(560px,100%);animation:entrar .22s ease-out}
+.folha h2{font-size:21px;font-weight:600;margin:0 0 18px;letter-spacing:-.015em}
+.folha label{display:block;margin-bottom:16px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--tinta-3)}
+.folha input,.folha textarea{display:block;width:100%;margin-top:7px;background:none;border:none;border-bottom:1.5px solid var(--tinta);padding:8px 2px;font-family:var(--ui);font-size:15px;letter-spacing:0;text-transform:none;color:var(--caneta);resize:vertical}
+.folha .acoes{display:flex;gap:10px;justify-content:flex-end}
+.folha .acoes button{background:var(--tinta);color:var(--papel);border:none;padding:11px 20px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.folha .acoes .sec{background:none;color:var(--tinta-2);border:1px solid var(--linha-forte)}
+
+.debrief{max-width:940px;margin:0 auto;min-height:100vh;background:var(--papel);border-left:1px solid var(--linha-forte);border-right:1px solid var(--linha-forte);padding:34px 40px 60px}
+.deb-topo{display:flex;justify-content:space-between;align-items:flex-start;gap:30px;border-bottom:3px double var(--linha-forte);padding-bottom:20px}
+.deb-topo h1{font-size:24px;font-weight:600;margin:0 0 6px;letter-spacing:-.02em;max-width:28ch}
+.deb-topo .ref{margin:0;font-family:var(--mono);font-size:11px;color:var(--tinta-3)}
+.deb-nota{text-align:right}
+.deb-nota strong{display:block;font-family:var(--mono);font-size:52px;line-height:1;font-weight:500}
+.pilares{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:22px;margin:26px 0 30px}
+.pilar-cab{display:flex;justify-content:space-between;align-items:baseline}
+.pilar-cab b{font-size:15px} .pilar-cab span{font-family:var(--mono);font-size:17px}
+.pilar-cab i{font-style:normal;font-size:11px;color:var(--tinta-3)}
+.regua{height:5px;background:var(--linha);margin:8px 0 7px}
+.regua i{display:block;height:100%;background:var(--caneta)}
+.pilar p{margin:0;font-size:12.5px;color:var(--tinta-3);line-height:1.4}
+.numeros{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));border-top:1px solid var(--linha-forte);border-bottom:1px solid var(--linha-forte)}
+.numeros>div{padding:12px 16px;border-left:1px solid var(--linha)}
+.numeros>div:first-child{border-left:none;padding-left:0}
+.numeros b{display:block;font-family:var(--mono);font-size:19px;margin-top:3px}
+.crono{margin-top:32px}
+.crono .rotulo{display:block;padding-bottom:8px;border-bottom:1px solid var(--linha)}
+.crono p{margin:12px 0 14px;font-size:13.5px;color:var(--tinta-3);max-width:74ch;line-height:1.5}
+.crono__papel{position:relative;border:1px solid var(--linha-forte)}
+.crono__papel canvas{display:block;width:100%}
+.crono__leitura{position:absolute;top:6px;right:8px;pointer-events:none;background:var(--papel);
+  border:1px solid var(--linha-forte);padding:4px 8px;font-family:var(--mono);font-size:10.5px;color:var(--tinta-2)}
+.crono__leitura em{font-style:normal;color:var(--caneta);margin-left:8px}
+.crono__legenda{list-style:none;display:flex;flex-wrap:wrap;gap:14px;margin:10px 0 0;padding:0}
+.crono__legenda li{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--tinta-3)}
+.crono__legenda li::before{content:'';display:inline-block;width:9px;height:2px;margin-right:6px;
+  vertical-align:middle;background:currentColor}
+.crono__legenda .lg-azul{color:var(--caneta)}
+.crono__legenda .lg-tinta{color:var(--tinta)}
+.crono__legenda .lg-verde{color:var(--verde)}
+.crono__legenda .lg-vermelho{color:var(--carimbo)}
+.achados{margin-top:30px}
+.achados ol{list-style:none;margin:14px 0 0;padding:0}
+.achado{border-top:1px solid var(--linha);padding:16px 0 16px 16px;border-left:2px solid var(--linha-forte)}
+.achado.critico{border-left-color:var(--carimbo)} .achado.importante{border-left-color:var(--atencao)}
+.achado .tags{display:flex;gap:8px;margin-bottom:5px}
+.achado .tags span{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--tinta-3)}
+.achado.critico .sev{color:var(--carimbo)} .achado.importante .sev{color:var(--atencao)}
+.achado b{display:block;font-size:15.5px}
+.achado p{margin:4px 0 0;font-size:14.5px;color:var(--tinta-2);max-width:70ch}
+.deb-rodape{margin-top:40px;padding-top:18px;border-top:3px double var(--linha-forte);display:flex;justify-content:space-between;align-items:center;gap:24px}
+.deb-rodape p{margin:0;font-size:12.5px;color:var(--tinta-3);max-width:62ch}
+.deb-rodape button{background:var(--tinta);color:var(--papel);border:none;padding:11px 20px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+
+@keyframes entrar{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:1040px){
+  .mesa{grid-template-columns:1fr}
+  .instr-col{border-left:none;border-top:1px solid var(--linha-forte)}
+  .papeleta{grid-template-columns:1fr;align-items:start;gap:16px}
+  .campos>div{text-align:left;padding-left:0;padding-right:18px;border-left:none;border-right:1px solid var(--linha)}
+  .campos>div:last-child{border-right:none}
+  .conversa{max-height:none}
+  .debrief{padding:26px 20px 50px}
+}
+@media (max-width:620px){
+  .coluna,.papeleta,.rodape{padding-left:18px;padding-right:18px}
+  .vitais{grid-template-columns:repeat(2,1fr)}
+  .vitais>div:nth-child(4n+1){border-left:1px solid var(--linha)}
+  .vitais>div:nth-child(odd){border-left:none}
+  .vitais>div:nth-child(n+3){border-top:1px solid var(--linha)}
+  .mapa{grid-template-columns:1fr}
+  .deb-topo{flex-direction:column} .deb-nota{text-align:left}
+}
+</style>
+
+<div id="raiz"></div>
+
+<script>
+(() => {
+'use strict';
+// ===========================================================================
+// CASO PS-DT-001 — o mesmo do protótipo em React, em arquivo único.
+// ===========================================================================
+const P = { nome:'Célia Ramos', idade:58, sexo:'Feminino', leito:'PS · Leito 4',
+  mrn:'MR-2026-58721', queixa:'Aperto no peito há 2 horas', entrada:'06:12' };
+
+const ABERTURA = '*sentada na maca, a mão fechada em cima do peito* Doutor... esse aperto num passa. Começou hoje de manhã, quando eu tava varrendo a área.';
+
+const ROTEIRO = [
+ {c:'queixa',p:2,r:'Pergunta aberta',g:['o que aconteceu','me conta','me contar','o que houve','esta sentindo','ta sentindo','me fala'],
+  f:'Eu tava varrendo a área, umas seis da manhã, e travou aqui no peito. *aperta o esterno* Num passa de jeito nenhum. Eu tô com medo de tá tendo um enfarte igual meu pai.'},
+ {c:'inicio',p:3,r:'Início e duração',g:['quando comecou','que horas','ha quanto tempo','quanto tempo','desde quando'],
+  f:'Umas seis da manhã. Já faz quase duas horas, doutor.'},
+ {c:'carater',p:3,r:'Caráter da dor',g:['como e a dor','tipo de dor','queimacao','aperto','pontada','facada','que tipo'],
+  f:'É um aperto. Um peso. Parece que tem alguém sentado em cima do meu peito.'},
+ {c:'irradiacao',p:4,r:'Irradiação',g:['irradia','espalha','vai para','braco','ombro','mandibula','pescoco','costas'],
+  f:'Sobe pro pescoço e desce pelo braço esquerdo, até o cotovelo. *esfrega o braço*'},
+ {c:'associados',p:4,r:'Sintomas associados',g:['enjoo','nausea','vomito','suor','suando','falta de ar','tontura','mais alguma coisa','outros sintomas'],
+  f:'Tô suando frio, enjoada, e falta o ar. Vomitar não vomitei.'},
+ {c:'prodromo',p:4,r:'Episódios prévios',g:['ja sentiu antes','antes','ja teve','outras vezes','ultimas semanas','episodio'],
+  f:'Nas últimas três semanas deu umas fisgadas quando eu subia a ladeira, mas passava se eu parasse. Achei que era gastura.'},
+ {c:'antecedentes',p:4,r:'Doenças prévias',g:['alguma doenca','diabetes','pressao alta','hipertensao','colesterol','problema de saude','se trata'],
+  f:'Tenho diabetes e pressão alta. O colesterol tava alto, mas eu num tomo nada. Faz uns dois anos que num vou no postinho.'},
+ {c:'medicacoes',p:3,r:'Medicações em uso',g:['remedio','medicacao','medicamento','toma alguma','comprimido','usa algum'],
+  f:'Tomo o da pressão e o da diabetes. Num sei o nome, tá na receita que ficou em casa.'},
+ {c:'alergia',p:4,r:'Alergias',g:['alergia','alergica','alergico'],
+  f:'Eu tenho alergia de sulfa. Fico toda empipocada.'},
+ {c:'habitos',p:3,r:'Tabagismo',g:['fuma','cigarro','tabagismo','bebe','alcool','exercicio'],
+  f:'Fumo, mas é pouco. Uns cinco por dia... faz uns trinta anos.'},
+ {c:'familia',p:3,r:'História familiar',g:['familia','pai','mae','parente'],
+  f:'Meu pai morreu de enfarte com 61 anos. É por isso que eu tô com medo.'}
+];
+
+const SEGREDOS = [
+ {c:'sildenafila',p:6,r:'Sildenafila nas últimas 24 h',critico:true,
+  g:['sildenafila','viagra','comprimido azul','erecao','sexual','tadalafila','cialis'],
+  f:'*fica sem graça* Doutor... ontem à noite eu tomei um comprimido azul que a vizinha me deu. Falaram que ajudava.'},
+ {c:'medo',p:2,r:'Contexto social',g:['medo','preocupa','preocupada','em casa','mora com'],
+  f:'Eu num posso ficar internada. Quem vai cuidar da minha mãe? Ela tem 84 anos.'}
+];
+
+const EVASIVAS = ['Num sei explicar direito, doutor.','*aperta o peito* Eu só sei que dói. Pergunta de outro jeito?','Isso eu num sei responder, não.'];
+
+const MANOBRAS = [
+ {id:'cardio',nome:'Auscultar coração',regiao:'precordio',tipo:'coracao',
+  achado:v=>'Bulhas rítmicas em 2 tempos, '+v.fc+' bpm. Sem sopros. B4 audível. Sem atrito.'},
+ {id:'pulmao',nome:'Auscultar pulmões',regiao:'torax',tipo:'pulmao',
+  achado:v=>'Murmúrio vesicular presente e simétrico, FR '+v.fr+' irpm. Sem estertores.'},
+ {id:'palpar',nome:'Palpar o tórax',regiao:'parede',tipo:'estatica',
+  achado:()=>'A palpação não reproduz a dor. Expansibilidade simétrica.'},
+ {id:'pulsos',nome:'Checar pulsos',regiao:'punho',tipo:'pulso',
+  achado:v=>v.pas<90?('Pulsos finos e rápidos, PA '+v.pas+'/'+v.pad+'. Enchimento capilar lento.')
+                    :('Pulsos simétricos e cheios. PA '+v.pas+'/'+v.pad+' igual nos dois braços.')}
+];
+
+// Prancha de semiologia, nao boneco de corpo inteiro: tudo que se examina aqui
+// e cervical, toracico ou de membro superior. Torax grande = anatomia de
+// verdade e alvo de 44 px, que e o minimo de toque.
+const REGIOES = {
+ pescoco:{nome:'Pescoço e via aérea',formas:[{cx:120,cy:72,rx:24,ry:20}]},
+ precordio:{nome:'Precórdio',det:'aórtico · pulmonar · tricúspide · mitral',formas:[{cx:126,cy:146,rx:37,ry:41}]},
+ torax:{nome:'Campos pulmonares',det:'ápices e bases, bilateral',formas:[{cx:84,cy:142,rx:23,ry:41},{cx:170,cy:142,rx:23,ry:41}]},
+ parede:{nome:'Parede torácica',det:'rebordo costal e junções condrais',formas:[{cx:120,cy:203,rx:45,ry:23}]},
+ braco:{nome:'Antebraço',det:'pele e mucosas',formas:[{cx:46,cy:208,rx:21,ry:33}]},
+ punho:{nome:'Punho',det:'pulso radial e perfusão',formas:[{cx:192,cy:241,rx:23,ry:23}]}
+};
+// Focos de ausculta nas posições reais. O paciente está de frente para você:
+// a direita dele fica à sua esquerda.
+const FOCOS=[{l:'A',x:106,y:121},{l:'P',x:135,y:121},{l:'T',x:131,y:161},{l:'M',x:152,y:171}];
+const BRACO_D='M62 116 L44 186 L48 244', BRACO_E='M178 116 L196 186 L192 244';
+const TRONCO='M106 78 C96 82 82 88 70 98 C62 106 58 120 58 140 L62 196 C64 220 68 238 72 254 L168 254 C172 238 176 220 178 196 L182 140 C182 120 178 106 170 98 C158 88 144 82 134 78 Z';
+// Aparencia da paciente: tom de pele e sinais visiveis do caso.
+const TOM={luz:'#E3BE99',base:'#CFA079',sombra:'#AC7E56'};
+const SINAIS_DO_CASO=['sudorese'];
+const URTICARIA=[[92,128,7],[108,152,5],[138,134,6],[156,158,7],[100,186,6],[146,196,5],[120,168,4],[70,150,5],[172,140,5],[52,176,4],[190,190,4],[124,210,6],[84,210,4],[160,216,5]];
+const SUOR=[[110,22,2.4],[130,20,2],[120,30,1.8],[104,118,2.2],[140,126,2],[122,100,2.4]];
+
+const EXAMES = [
+ {id:'ecg',nome:'ECG de 12 derivações',custo:45,tat:5,indicado:true,peso:10,meta:10,flag:'critico',
+  res:'Supradesnivelamento de ST de 3 mm em D2, D3 e aVF. Infra em D1 e aVL.'},
+ {id:'glicemia',nome:'Glicemia capilar',custo:5,tat:2,indicado:true,peso:3,flag:'alto',res:'243 mg/dL'},
+ {id:'troponina',nome:'Troponina I ultrassensível',custo:78,tat:40,indicado:true,peso:8,flag:'critico',res:'1.842 ng/L (ref < 34)'},
+ {id:'creatinina',nome:'Creatinina e ureia',custo:28,tat:30,indicado:true,peso:4,flag:'alto',res:'Cr 1,3 mg/dL · Ur 48 mg/dL'},
+ {id:'rxtorax',nome:'Raio-X de tórax',custo:60,tat:25,aceitavel:true,peso:2,flag:'normal',res:'Área cardíaca no limite. Sem congestão.'},
+ {id:'angiotc',nome:'Angio-TC de tórax',custo:780,tat:60,peso:0,flag:'normal',res:'Sem falha de enchimento. Sem dissecção.'},
+ {id:'rmcranio',nome:'RM de crânio',custo:1400,tat:90,peso:0,flag:'normal',res:'Sem alterações agudas.'}
+];
+
+const FARMACOS = [
+ {id:'aas',nome:'AAS',classe:'Antiagregante',via:'VO mastigado',custo:2,classif:'esperado',peso:10,janela:30,
+  doses:[{r:'300 mg',f:1}],pd:{i:10,p:25,d:240,e:{dor:-1}},
+  nota:'Não mexe em pressão nem frequência. O ganho é na mortalidade, não no monitor.',
+  exp:'Antiagregação imediata. Reduz mortalidade e custa dois reais.'},
+ {id:'clopidogrel',nome:'Clopidogrel',classe:'Antiagregante',via:'VO',custo:12,classif:'esperado',peso:5,janela:60,
+  doses:[{r:'300 mg',f:1},{r:'600 mg',f:1.4}],pd:{i:30,p:120,d:480,e:{}},
+  nota:'Dose de ataque antes da angioplastia.',exp:'Dupla antiagregação antes da angioplastia primária.'},
+ {id:'morfina',nome:'Morfina',classe:'Opioide',via:'IV lenta',custo:8,classif:'aceitavel',peso:2,janela:90,
+  doses:[{r:'2 mg',f:1},{r:'4 mg',f:2},{r:'6 mg',f:3}],pd:{i:1,p:8,d:90,e:{dor:-3.5,fr:-3,pas:-9,pad:-5,spo2:-1}},
+  nota:'Analgesia com preço: deprime a respiração e derruba a pressão. Dobre a dose e olhe a FR.',
+  exp:'Analgesia se a dor persiste. Mascara sintoma e derruba a pressão.'},
+ {id:'nitrato',nome:'Nitroglicerina',classe:'Vasodilatador',via:'Sublingual',custo:4,classif:'contraindicado',peso:12,
+  doses:[{r:'5 mg',f:1},{r:'10 mg',f:2}],pd:{i:1,p:4,d:30,e:{pas:-19,pad:-10,fc:8,dor:-2}},
+  nota:'Vasodilata e alivia a dor isquêmica. Proibido até 24 h depois de inibidor de fosfodiesterase-5.',
+  exp:'Proibido até 24 h depois de um inibidor de fosfodiesterase-5. Ela tomou sildenafila ontem — e só conta se perguntarem.'},
+ {id:'oxigenio',nome:'Oxigênio',classe:'Suporte',via:'Cateter nasal',custo:6,classif:'aceitavel',peso:1,janela:90,
+  doses:[{r:'2 L/min',f:1},{r:'5 L/min',f:1.8}],pd:{i:1,p:4,d:180,e:{spo2:3}},
+  nota:'Só corrige quem está hipoxêmico. Em normoxemia, oxigênio não é remédio.',exp:'Só se SpO₂ < 94%.'},
+ {id:'omeprazol',nome:'Omeprazol',classe:'IBP',via:'IV',custo:22,classif:'desnecessario',peso:4,
+  doses:[{r:'40 mg',f:1}],pd:{i:20,p:60,d:480,e:{}},
+  nota:'Trata a mucosa gástrica.',exp:'Tratar dor torácica isquêmica como gastrite atrasa a reperfusão.'},
+ {id:'hemodinamica',nome:'Acionar hemodinâmica',classe:'Procedimento',via:'Angioplastia primária',custo:0,classif:'esperado',peso:15,janela:90,
+  doses:[{r:'acionar agora',f:1}],pd:{i:25,p:45,d:600,e:{dor:-6,fc:-12,pas:-6}},
+  nota:'A artéria reabre e a dor cede. O relógio da porta-balão é de 90 minutos.',
+  exp:'A conduta que define o caso. Porta-balão alvo: 90 minutos.'}
+];
+
+const INTERACOES = {nitrato:{fator:3.2,motivo:'sildenafila nas últimas 24 h'}};
+const BASE = {fc:108,pas:158,pad:94,spo2:94,fr:24,temp:37.1,etco2:34,dor:9};
+const GABARITO = {dx:'IAM com supradesnivelamento de ST de parede inferior',
+  ref:'Diretriz de IAMCSST — SBC, 2021',aceita:/supra|iamcsst|iam|infarto|\bst\b|coronar/i,chave:'hemodinamica'};
+const ACEL = 30;
+
+// ===========================================================================
+// MOTOR
+// ===========================================================================
+const semAcento = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+const lim = (v,a,b) => Math.max(a,Math.min(b,v));
+
+function responder(texto){
+  const t = semAcento(texto);
+  const bate = it => it.g.some(g => t.includes(semAcento(g)));
+  for (const s of SEGREDOS) if (bate(s)) return {fala:s.f,revelou:s.c};
+  for (const r of ROTEIRO) if (bate(r) && !E.revelados.includes(r.c)) return {fala:r.f,revelou:r.c};
+  for (const r of ROTEIRO) if (bate(r)) return {fala:'Isso eu já falei, doutor. '+r.f,revelou:null};
+  return {fala:EVASIVAS[Math.floor(Math.random()*EVASIVAS.length)],revelou:null};
+}
+
+function fracao(pd,dt){
+  if (dt < pd.i || dt >= pd.d) return 0;
+  if (dt < pd.p) return (dt-pd.i)/Math.max(.1,pd.p-pd.i);
+  return 1-(dt-pd.p)/Math.max(.1,pd.d-pd.p);
+}
+
+function estado(tMin){
+  const b = Object.assign({},BASE);
+  b.fc += Math.min(tMin*0.3,16); b.pas += Math.min(tMin*0.2,8);
+  const ativos = [];
+  for (const a of E.doses){
+    const f = FARMACOS.find(x=>x.id===a.id);
+    const dt = tMin-a.minuto, fr = fracao(f.pd,dt);
+    const inter = INTERACOES[a.id], amp = inter?inter.fator:1;
+    const contrib = {};
+    for (const k in f.pd.e){ const d = f.pd.e[k]*fr*a.fator*amp; contrib[k]=d; b[k]=(b[k]||0)+d; }
+    if (dt>=0) ativos.push({nome:f.nome,dose:a.rotulo,minuto:a.minuto,frac:fr,contrib,amp,
+      motivo:inter?inter.motivo:null,
+      fase: dt<f.pd.i?'latência':dt<f.pd.p?'subindo':fr>0?'caindo':'terminado'});
+  }
+  const osc = k => Math.sin(tMin*k)*1.4;
+  const v = {fc:Math.round(lim(b.fc+osc(6.1),20,220)),pas:Math.round(lim(b.pas+osc(4.3),40,260)),
+    pad:Math.round(lim(b.pad+osc(3.7),20,160)),spo2:Math.round(lim(b.spo2,50,100)),
+    fr:Math.round(lim(b.fr,4,60)),temp:Math.round(lim(b.temp,33,42)*10)/10,
+    etco2:Math.round(lim(b.etco2,10,70)),dor:Math.round(lim(b.dor,0,10))};
+  v.pam = Math.round((v.pas+2*v.pad)/3);
+  return {v,ativos};
+}
+
+const gravidade = v => (v.pas<90||v.spo2<90||v.fc>150||v.pam<65) ? 'critico'
+  : (v.pas<100||v.spo2<93||v.fr>28) ? 'atencao' : 'estavel';
+
+// ===========================================================================
+// ESTADO
+// ===========================================================================
+const E = {t:0,msgs:[{de:'paciente',txt:ABERTURA,min:0}],revelados:[],pedidos:[],doses:[],
+  manobras:[],hist:[],aba:'condutas',doseAberta:null,painel:null,encerrando:false,fim:null,gravAnt:'estavel'};
+
+const min = () => Math.floor(E.t/60);
+const tMin = () => E.t/60;
+const real = v => 'R$ ' + v.toLocaleString('pt-BR');
+const custo = () => E.pedidos.reduce((s,p)=>s+EXAMES.find(e=>e.id===p.id).custo,0)
+  + E.doses.reduce((s,a)=>s+FARMACOS.find(f=>f.id===a.id).custo,0);
+const rel = s => String(Math.floor(s/60)).padStart(2,'0')+':'+String(Math.floor(s%60)).padStart(2,'0');
+const sinal = n => (n>0?'+':'−') + Math.abs(n).toFixed(Math.abs(n)>=10?0:1);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function registrar(de,txt){ E.msgs.push({de,txt,min:min()}); pintarConversa(); }
+
+// ===========================================================================
+// AÇÕES
+// ===========================================================================
+function perguntar(texto){
+  const t = texto.trim(); if (!t || E.fim) return;
+  registrar('medico',t); E.t += 25;
+  setTimeout(() => { const r = responder(t); registrar('paciente',r.fala);
+    if (r.revelou && !E.revelados.includes(r.revelou)) E.revelados.push(r.revelou); }, 520);
+}
+
+function examinar(m){
+  const feita = E.manobras.includes(m.id), repetivel = m.tipo !== 'estatica';
+  if (feita && !repetivel) return;
+  E.t += feita ? 20 : 60;
+  const {v} = estado(tMin());
+  registrar('exame',(feita?'Reavaliação — ':'')+m.nome+' — '+m.achado(v));
+  if (!feita) E.manobras.push(m.id);
+  E.painel = repetivel ? m : null;
+  pintar();
+}
+
+function pedir(ex){
+  if (E.pedidos.some(p=>p.id===ex.id)) return;
+  E.pedidos.push({id:ex.id,minuto:min(),prontoEm:min()+ex.tat,visto:false});
+  E.t += 30; pintar();
+}
+
+function injetar(f,d){
+  E.doses.push({id:f.id,fator:d.f,rotulo:d.r,minuto:min()});
+  E.doseAberta = null; E.t += 45;
+  registrar('conduta',f.nome+' '+d.r+' — '+f.via);
+  pintar();
+}
+
+// ===========================================================================
+// PONTUAÇÃO
+// ===========================================================================
+function pontuar(hipotese){
+  const ach = [], universo = ROTEIRO.concat(SEGREDOS);
+  const pesoTot = universo.reduce((s,r)=>s+r.p,0);
+  const ganhoA = universo.filter(r=>E.revelados.includes(r.c)).reduce((s,r)=>s+r.p,0);
+  const anamnese = Math.round(ganhoA/pesoTot*25);
+  universo.forEach(r=>{ if(!E.revelados.includes(r.c)&&r.p>=4) ach.push({pilar:'Anamnese',sev:r.critico?'critico':'importante',
+    t:'Não perguntou: '+r.r.toLowerCase(),
+    d:r.critico?'Era a informação que mudava a conduta, e ela não ia oferecer sozinha.':'Tema de peso alto neste caso. Ficou fora da sua anamnese.'}); });
+
+  let ganho=0, desp=0;
+  E.pedidos.forEach(p=>{ const e=EXAMES.find(x=>x.id===p.id);
+    if (e.indicado||e.aceitavel){ ganho+=e.peso;
+      if (!p.visto && min()>=p.prontoEm){ desp+=1; ach.push({pilar:'Investigação',sev:'refinamento',
+        t:'Pediu e não abriu: '+e.nome,d:'O resultado ficou pronto e você encerrou sem olhar.'}); }
+      if (e.meta && p.minuto>e.meta) ach.push({pilar:'Investigação',sev:'importante',
+        t:e.nome+' pedido no minuto '+p.minuto,d:'A meta é '+e.meta+' minutos da chegada. Cada minuto aqui é músculo cardíaco.'});
+    } else { desp += e.custo/120; ach.push({pilar:'Investigação',sev:e.custo>500?'importante':'refinamento',
+      t:'Fora do racional: '+e.nome,d:real(e.custo)+' e '+e.tat+' min do relógio, sem mudar a sua conduta aqui.'}); }});
+  const pesoMaxInv = EXAMES.filter(e=>e.indicado).reduce((s,e)=>s+e.peso,0);
+  const investigacao = lim(Math.round((ganho-desp)/pesoMaxInv*25),0,25);
+  EXAMES.forEach(e=>{ if(e.indicado&&e.peso>=8&&!E.pedidos.some(p=>p.id===e.id))
+    ach.push({pilar:'Investigação',sev:'critico',t:'Não pediu: '+e.nome,d:'Sem este exame o caso não fecha.'}); });
+
+  let pts=0; const vistos=new Set();
+  E.doses.forEach(a=>{ if(vistos.has(a.id))return; vistos.add(a.id);
+    const f=FARMACOS.find(x=>x.id===a.id);
+    if (f.classif==='esperado'){ const dentro=a.minuto<=(f.janela||999); pts+=dentro?f.peso:f.peso/2;
+      if(!dentro) ach.push({pilar:'Conduta',sev:'importante',t:f.nome+' fora da janela',
+        d:'Feito no minuto '+a.minuto+'; a janela é de '+f.janela+' min. Vale metade.'});
+    } else if (f.classif==='contraindicado'){ pts-=f.peso*2;
+      ach.push({pilar:'Conduta',sev:'critico',t:'Contraindicado: '+f.nome,d:f.exp});
+    } else if (f.classif==='desnecessario'){ pts-=f.peso;
+      ach.push({pilar:'Conduta',sev:'refinamento',t:'Sem indicação: '+f.nome,d:f.exp}); }});
+  FARMACOS.filter(f=>f.classif==='esperado').forEach(f=>{ if(!E.doses.some(a=>a.id===f.id))
+    ach.push({pilar:'Conduta',sev:f.peso>=10?'critico':'importante',t:'Não prescreveu: '+f.nome,d:f.exp}); });
+  const pesoMaxC = FARMACOS.filter(f=>f.classif==='esperado').reduce((s,f)=>s+f.peso,0);
+  const conduta = lim(Math.round(pts/pesoMaxC*35),0,35);
+
+  const falas = E.msgs.filter(m=>m.de==='medico').map(m=>semAcento(m.txt)).join(' ');
+  let soft=0;
+  if (/(meu nome e|sou (o|a) (dr|dra|doutor|doutora))|me chamo|vou te atender/.test(falas)) soft+=5;
+  else ach.push({pilar:'Soft skills',sev:'importante',t:'Não se apresentou',d:'Ela passou o atendimento inteiro sem saber quem cuidava dela.'});
+  if (/(vou (te )?(examinar|pedir|passar|dar|colocar|aplicar))|(a senhora vai sentir)|(eu vou)/.test(falas)) soft+=4;
+  else ach.push({pilar:'Soft skills',sev:'refinamento',t:'Não explicou o que ia fazer',d:'Dizer o próximo passo em voz alta baixa a ansiedade e melhora o que a paciente conta.'});
+  if (/(medo|preocupa|calma|to aqui|estou aqui|tudo bem)/.test(falas)) soft+=3;
+  if (!/(precordial|dispneia|diaforese|epigastralgia|sca|iam|supra de st)/.test(falas)) soft+=3;
+  else ach.push({pilar:'Soft skills',sev:'refinamento',t:'Falou em jargão com a paciente',d:'Ela tem fundamental incompleto. Termo técnico vira silêncio, não vira informação.'});
+  soft = Math.min(15,soft);
+
+  const acertou = GABARITO.aceita.test(hipotese||'');
+  if (!acertou) ach.push({pilar:'Conduta',sev:'critico',t:'Hipótese principal não bate com o caso',d:'Diagnóstico do caso: '+GABARITO.dx+'.'});
+
+  const ordem = {critico:0,importante:1,refinamento:2};
+  ach.sort((a,b)=>ordem[a.sev]-ordem[b.sev]);
+  const chave = E.doses.find(a=>a.id===GABARITO.chave);
+  const metas=[];
+  EXAMES.forEach(e=>{ if(!e.meta) return; const ped=E.pedidos.find(x=>x.id===e.id);
+    metas.push({t:e.meta,rotulo:e.nome.split(' ')[0],feitoEm:ped?ped.minuto:null}); });
+  const fChave=FARMACOS.find(f=>f.id===GABARITO.chave);
+  if (fChave&&fChave.janela) metas.push({t:fChave.janela,rotulo:'porta-balão',
+    feitoEm:chave?chave.minuto:null});
+  const linha={
+    perguntas:E.msgs.filter(m=>m.de==='medico').map(m=>m.min),
+    exame:E.msgs.filter(m=>m.de==='exame').map(m=>m.min),
+    exames:E.pedidos.map(p=>{const e=EXAMES.find(x=>x.id===p.id);
+      return {nome:e.nome,minuto:p.minuto,prontoEm:p.prontoEm,visto:p.visto,
+              indicado:!!(e.indicado||e.aceitavel)};}),
+    condutas:E.doses.map(a=>{const f=FARMACOS.find(x=>x.id===a.id);
+      return {nome:f.nome,minuto:a.minuto,classe:f.classif};}),
+    historico:E.hist, metas
+  };
+  return {linha,anamnese,investigacao,conduta,soft,total:anamnese+investigacao+conduta+soft,
+    ach,acertou,minutoChave:chave?chave.minuto:null,custo:custo(),min:min(),
+    manobras:E.manobras.length,hipotese};
+}
+
+// ===========================================================================
+// ECG — morfologia PQRST com supra de ST
+// ===========================================================================
+function amplitude(f,supra){
+  if (f<0.08) return 0;
+  if (f<0.18) return 0.14*Math.sin((f-0.08)/0.1*Math.PI);
+  if (f<0.225) return 0;
+  if (f<0.245) return -0.09*((f-0.225)/0.02);
+  if (f<0.265) return -0.09+1.35*((f-0.245)/0.02);
+  if (f<0.295) return 1.26-1.55*((f-0.265)/0.03);
+  if (f<0.34) return -0.29+(0.29+supra)*((f-0.295)/0.045);
+  if (f<0.44) return supra;
+  if (f<0.66) return supra+0.34*Math.sin((f-0.44)/0.22*Math.PI);
+  return 0;
+}
+
+const MM=4, PXS=25*MM, HZ=PXS, ALT=160, SUPRA=0.26;
+let buffer=[], fase=0, passo=0;
+
+function fitaQuadro(quadros){
+  const cv = document.getElementById('fita'); if(!cv) return;
+  const ctx = cv.getContext('2d');
+  const larg = cv.parentElement.clientWidth||600, dpr = devicePixelRatio||1;
+  if (cv.width !== Math.round(larg*dpr)){
+    cv.width=Math.round(larg*dpr); cv.height=Math.round(ALT*dpr);
+    cv.style.width=larg+'px'; cv.style.height=ALT+'px'; ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  const {v} = estado(tMin());
+  for (let n=0;n<quadros;n++){
+    fase += 1/HZ/(60/Math.max(30,v.fc)); if(fase>=1) fase-=1;
+    buffer.push(amplitude(fase,SUPRA)+Math.sin(passo/260)*0.02+(Math.random()-0.5)*0.012);
+    passo++; if(buffer.length>3000) buffer.shift();
+  }
+  const meio = ALT*0.62, off = passo%(5*MM);
+  ctx.fillStyle='#FCF1EC'; ctx.fillRect(0,0,larg,ALT);
+  ctx.lineWidth=1; ctx.strokeStyle='#F3DAD2'; ctx.beginPath();
+  for(let x=-off;x<larg;x+=MM){ctx.moveTo(x+.5,0);ctx.lineTo(x+.5,ALT);}
+  for(let y=0;y<ALT;y+=MM){ctx.moveTo(0,y+.5);ctx.lineTo(larg,y+.5);}
+  ctx.stroke();
+  ctx.strokeStyle='#E3A797'; ctx.beginPath();
+  for(let x=-off;x<larg;x+=5*MM){ctx.moveTo(x+.5,0);ctx.lineTo(x+.5,ALT);}
+  for(let y=ALT%(5*MM);y<ALT;y+=5*MM){ctx.moveTo(0,y+.5);ctx.lineTo(larg,y+.5);}
+  ctx.stroke();
+  const vis = Math.min(buffer.length,Math.floor(larg));
+  ctx.strokeStyle='#17110E'; ctx.lineWidth=1.7; ctx.lineJoin='round'; ctx.beginPath();
+  for(let i=0;i<vis;i++){ const val=buffer[buffer.length-vis+i], x=larg-vis+i, y=meio-val*10*MM;
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.stroke();
+  const ult = meio-(buffer[buffer.length-1]||0)*10*MM;
+  ctx.fillStyle='#17110E'; ctx.beginPath();
+  ctx.moveTo(larg,ult-5); ctx.lineTo(larg,ult+5); ctx.lineTo(larg-7,ult); ctx.closePath(); ctx.fill();
+  ctx.fillStyle='#B0776A'; ctx.font='500 10px "IBM Plex Mono",monospace';
+  ctx.fillText('II   25 mm/s   10 mm/mV',10,16);
+}
+// Em aba oculta o navegador não chama requestAnimationFrame; o primeiro quadro
+// é desenhado à mão para o papel nunca aparecer em branco na volta.
+function fitaLoop(){ fitaQuadro(Math.round(HZ/60)); requestAnimationFrame(fitaLoop); }
+
+const DER = [
+ [{n:'I',a:.62,s:-.35},{n:'aVR',a:-.48,s:-.4},{n:'V1',a:.45,s:.02},{n:'V4',a:1.1,s:0}],
+ [{n:'II',a:1,s:1},{n:'aVL',a:-.34,s:-.5},{n:'V2',a:.9,s:.05},{n:'V5',a:.85,s:.02}],
+ [{n:'III',a:.88,s:1.05},{n:'aVF',a:.95,s:1},{n:'V3',a:1,s:.05},{n:'V6',a:.6,s:.02}]
+];
+
+function desenharECG12(cv,fc,minuto){
+  const ctx=cv.getContext('2d'), dpr=devicePixelRatio||1, mm=3.2;
+  const larg=cv.parentElement.clientWidth||420, alturaLinha=24*mm, alt=alturaLinha*3+30*mm+26;
+  cv.width=Math.round(larg*dpr); cv.height=Math.round(alt*dpr);
+  cv.style.width=larg+'px'; cv.style.height=alt+'px'; ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.fillStyle='#FCF1EC'; ctx.fillRect(0,0,larg,alt);
+  ctx.lineWidth=1; ctx.strokeStyle='#F3DAD2'; ctx.beginPath();
+  for(let x=0;x<larg;x+=mm){ctx.moveTo(x+.5,0);ctx.lineTo(x+.5,alt);}
+  for(let y=0;y<alt;y+=mm){ctx.moveTo(0,y+.5);ctx.lineTo(larg,y+.5);}
+  ctx.stroke();
+  ctx.strokeStyle='#E7B4A5'; ctx.beginPath();
+  for(let x=0;x<larg;x+=5*mm){ctx.moveTo(x+.5,0);ctx.lineTo(x+.5,alt);}
+  for(let y=0;y<alt;y+=5*mm){ctx.moveTo(0,y+.5);ctx.lineTo(larg,y+.5);}
+  ctx.stroke();
+  const rr=60/Math.max(30,fc), col=(larg-8)/4;
+  const traco=(d,x0,y0,w,seg,desl)=>{
+    ctx.strokeStyle='#17110E'; ctx.lineWidth=1.4; ctx.beginPath();
+    const passos=Math.floor(w);
+    for(let i=0;i<passos;i++){ const t=desl+(i/passos)*seg, f=(t%rr)/rr;
+      const y=y0-amplitude(f,SUPRA*d.s)*d.a*10*mm; i?ctx.lineTo(x0+i,y):ctx.moveTo(x0+i,y); }
+    ctx.stroke();
+    ctx.fillStyle='#17110E'; ctx.font='600 10px "IBM Plex Mono",monospace';
+    ctx.fillText(d.n,x0+4,y0-9*mm);
+  };
+  DER.forEach((linha,l)=>{ const y=26+alturaLinha*l+alturaLinha*0.55;
+    linha.forEach((d,c)=>{ traco(d,4+col*c,y,col-6,2.4,c*2.4);
+      if(c){ ctx.strokeStyle='#D9A492'; ctx.beginPath();
+        ctx.moveTo(4+col*c-3,y-8*mm); ctx.lineTo(4+col*c-3,y+8*mm); ctx.stroke(); }});});
+  traco({n:'II · ritmo',a:1,s:1},4,26+alturaLinha*3+14*mm,larg-12,9.6,0);
+  ctx.fillStyle='#A8695A'; ctx.font='500 9.5px "IBM Plex Mono",monospace';
+  ctx.fillText(P.nome+'   FC '+fc+' bpm   25 mm/s   10 mm/mV   minuto '+minuto,5,14);
+}
+
+// ===========================================================================
+// TENDÊNCIA
+// ===========================================================================
+const FAIXAS={fc:{min:40,max:190,cor:'#17110E'},pas:{min:40,max:220,cor:'#1B3FA0'},spo2:{min:70,max:100,cor:'#2C6A4A'}};
+let leitura=null, escala={ini:0,fim:30,larg:400};
+
+// Registrador multicanal: uma faixa por parâmetro, escala própria, marcas de
+// injeção atravessando as três. Três escalas no mesmo quadro só confundem.
+const ORDEM=['fc','pas','spo2'], ROTULOS={fc:'FC',pas:'PAS',spo2:'SpO₂'}, FBANDA=42;
+
+function desenharTendencia(){
+  const cv=document.getElementById('tend'); if(!cv) return;
+  const ctx=cv.getContext('2d'), dpr=devicePixelRatio||1;
+  const ALTT=ORDEM.length*FBANDA+18, larg=cv.parentElement.clientWidth||400;
+  cv.width=Math.round(larg*dpr); cv.height=Math.round(ALTT*dpr);
+  cv.style.width=larg+'px'; cv.style.height=ALTT+'px'; ctx.setTransform(dpr,0,0,dpr,0,0);
+  const fim=Math.max(30,E.hist.length?E.hist[E.hist.length-1].t:0), ini=Math.max(0,fim-30);
+  escala={ini,fim,larg};
+  const x=t=>((t-ini)/Math.max(.1,fim-ini))*(larg-46)+42;
+  ctx.fillStyle='#FCF1EC'; ctx.fillRect(0,0,larg,ALTT);
+  const pts=E.hist.filter(p=>p.t>=ini);
+
+  ORDEM.forEach((k,i)=>{
+    const fx=FAIXAS[k], topo=8+i*FBANDA, base=topo+FBANDA-14;
+    const y=val=>base-((val-fx.min)/(fx.max-fx.min))*(base-topo);
+    ctx.strokeStyle='#F0D3CB'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(42,base+.5); ctx.lineTo(larg-4,base+.5);
+    ctx.moveTo(42,topo+.5); ctx.lineTo(larg-4,topo+.5); ctx.stroke();
+    ctx.fillStyle=fx.cor; ctx.font='500 9.5px "IBM Plex Mono",monospace';
+    ctx.fillText(ROTULOS[k],4,topo+11);
+    if (pts.length){ ctx.fillStyle='#8C7C74'; ctx.font='500 8.5px "IBM Plex Mono",monospace';
+      ctx.fillText(fx.max,4,topo+22); ctx.fillText(fx.min,4,base); }
+    if (pts.length>1){
+      ctx.strokeStyle=fx.cor; ctx.lineWidth=1.5; ctx.beginPath();
+      pts.forEach((p,j)=>{ const px=x(p.t), py=y(p[k]); j?ctx.lineTo(px,py):ctx.moveTo(px,py); });
+      ctx.stroke();
+      const u=pts[pts.length-1];
+      ctx.fillStyle=fx.cor; ctx.beginPath(); ctx.arc(x(u.t),y(u[k]),2.6,0,7); ctx.fill();
+      ctx.font='500 11px "IBM Plex Mono",monospace';
+      ctx.fillText(u[k],Math.min(x(u.t)+6,larg-30),y(u[k])-5);
+    }
+    if (leitura){ ctx.fillStyle=fx.cor; ctx.beginPath(); ctx.arc(x(leitura.t),y(leitura[k]),3.2,0,7); ctx.fill();
+      ctx.strokeStyle='#FCF1EC'; ctx.lineWidth=1; ctx.stroke(); }
+  });
+
+  const alturaTotal=ORDEM.length*FBANDA;
+  ctx.font='500 9px "IBM Plex Mono",monospace';
+  E.doses.forEach(a=>{ if(a.minuto<ini) return; const px=x(a.minuto);
+    ctx.strokeStyle='#C08A7C'; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(px,4); ctx.lineTo(px,alturaTotal); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#A8695A';
+    ctx.fillText(FARMACOS.find(f=>f.id===a.id).nome.split(' ')[0],Math.min(px+3,larg-46),alturaTotal+9); });
+  if (leitura){ const px=x(leitura.t);
+    ctx.strokeStyle='#8C7C74'; ctx.setLineDash([2,3]);
+    ctx.beginPath(); ctx.moveTo(px,4); ctx.lineTo(px,alturaTotal); ctx.stroke(); ctx.setLineDash([]); }
+  ctx.fillStyle='#B0776A'; ctx.font='500 9px "IBM Plex Mono",monospace';
+  ctx.fillText(Math.round(ini)+'′',42,ALTT-3); ctx.fillText(Math.round(fim)+'′',larg-26,ALTT-3);
+}
+
+// ===========================================================================
+// AUSCULTA — Web Audio
+// ===========================================================================
+let ac=null, noAtual=null, ganhoAtual=null, mudo=false;
+const pegarAC = () => { if(!ac) ac = new (window.AudioContext||window.webkitAudioContext)();
+  if (ac.state==='suspended') ac.resume(); return ac; };
+
+function thud(ctx,dest,t,freq,dur,pico){
+  const o=ctx.createOscillator(), g=ctx.createGain();
+  o.type='sine'; o.frequency.setValueAtTime(freq,t);
+  g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(pico,t+.01);
+  g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g).connect(dest); o.start(t); o.stop(t+dur+.02);
+}
+
+function pararAusculta(){ if(noAtual){noAtual.parar();noAtual=null;} if(ganhoAtual){ganhoAtual.disconnect();ganhoAtual=null;} }
+
+function iniciarAusculta(tipo){
+  pararAusculta(); const ctx=pegarAC();
+  ganhoAtual=ctx.createGain(); ganhoAtual.gain.value=mudo?0:1; ganhoAtual.connect(ctx.destination);
+  let prox=ctx.currentTime+.05, ativo=true, ruido=null, filtro=null, env=null;
+  if (tipo==='pulmao'){
+    const buf=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate), d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+    ruido=ctx.createBufferSource(); ruido.buffer=buf; ruido.loop=true;
+    filtro=ctx.createBiquadFilter(); filtro.type='bandpass';
+    env=ctx.createGain(); env.gain.value=0;
+    ruido.connect(filtro).connect(env).connect(ganhoAtual); ruido.start();
+  }
+  const id=setInterval(()=>{ if(!ativo||document.hidden) return;
+    const {v}=estado(tMin());
+    while(prox<ctx.currentTime+.12){
+      if (tipo==='coracao'){ thud(ctx,ganhoAtual,prox,65,.09,.85); thud(ctx,ganhoAtual,prox+.16,48,.07,.5);
+        prox += 60/Math.max(30,v.fc);
+      } else { const ciclo=60/Math.max(6,v.fr), insp=ciclo*.4, expp=ciclo*.6;
+        const grav=Math.max(0,Math.min(1,(94-v.spo2)/15));
+        filtro.frequency.setValueAtTime(300,prox); filtro.Q.setValueAtTime(.6,prox);
+        env.gain.setValueAtTime(.0001,prox);
+        env.gain.linearRampToValueAtTime(.10*(.4+.6*grav),prox+insp*.3);
+        env.gain.linearRampToValueAtTime(.0001,prox+insp);
+        env.gain.linearRampToValueAtTime(.05*(.4+.6*grav),prox+insp+expp*.3);
+        env.gain.linearRampToValueAtTime(.0001,prox+ciclo);
+        prox += ciclo; }
+    }},25);
+  noAtual={parar:()=>{ativo=false;clearInterval(id); if(ruido){try{ruido.stop();}catch(e){}}}};
+}
+
+let fasePulso=0;
+function desenharAusculta(){
+  const cv=document.getElementById('ausc'); if(!cv||!E.painel) return;
+  const ctx=cv.getContext('2d'), dpr=devicePixelRatio||1, A=90;
+  const larg=cv.parentElement.clientWidth||360;
+  if (cv.width!==Math.round(larg*dpr)){ cv.width=Math.round(larg*dpr); cv.height=Math.round(A*dpr);
+    cv.style.width=larg+'px'; cv.style.height=A+'px'; ctx.setTransform(dpr,0,0,dpr,0,0); }
+  const {v}=estado(tMin());
+  ctx.fillStyle='#FCF1EC'; ctx.fillRect(0,0,larg,A);
+  ctx.strokeStyle='#17110E'; ctx.lineWidth=1.6; ctx.beginPath();
+  const meio=A/2;
+  for(let x=0;x<larg;x++){
+    let y;
+    if (E.painel.tipo==='pulso'){ const rr=60/Math.max(30,v.fc), amp=v.pas<90?6:16;
+      const f=(((x/larg)*6+fasePulso)%rr)/rr;
+      y=meio-Math.pow(Math.max(0,Math.sin(f*Math.PI)),3)*amp;
+    } else if (E.painel.tipo==='coracao'){ const rr=60/Math.max(30,v.fc);
+      const f=(((x/larg)*4+fasePulso)%rr)/rr;
+      const b=(f<.06?Math.sin(f/.06*Math.PI)*1:0)+(f>.2&&f<.26?Math.sin((f-.2)/.06*Math.PI)*.6:0);
+      y=meio-b*22;
+    } else { y=meio+Math.sin((x/larg)*10*Math.PI+fasePulso*6)*Math.max(2,10-Math.abs(Math.sin(fasePulso))*4); }
+    x?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.stroke();
+}
+
+// ===========================================================================
+// RENDER
+// ===========================================================================
+function figuraSVG(){
+  let pontos='';
+  MANOBRAS.forEach(m=>{ const reg=REGIOES[m.regiao]; if(!reg) return;
+    pontos += '<g class="ponto" tabindex="0" role="button" data-m="'+m.id+'" aria-label="'+esc(m.nome+' \u2014 '+reg.nome)+'">'
+      + reg.formas.map(f=>'<ellipse cx="'+f.cx+'" cy="'+f.cy+'" rx="'+f.rx+'" ry="'+f.ry+'" class="area"></ellipse>').join('')
+      + '<path class="tique" style="display:none"></path></g>';
+  });
+  return '<svg viewBox="0 0 240 300" role="group" aria-label="Prancha da paciente">'
+   + '<defs><linearGradient id="pp-pele" x1="0" y1="0" x2="1" y2="0">'
+   + '<stop offset="0" stop-color="'+TOM.sombra+'"></stop><stop offset="0.3" stop-color="'+TOM.base+'"></stop>'
+   + '<stop offset="0.52" stop-color="'+TOM.luz+'"></stop><stop offset="0.78" stop-color="'+TOM.base+'"></stop>'
+   + '<stop offset="1" stop-color="'+TOM.sombra+'"></stop></linearGradient>'
+   + '<linearGradient id="pp-avental" x1="0" y1="0" x2="0.9" y2="1"><stop offset="0" stop-color="#DCE5EC"></stop>'
+   + '<stop offset="0.55" stop-color="#C6D3DE"></stop><stop offset="1" stop-color="#AFC0CE"></stop></linearGradient>'
+   + '<filter id="pp-suave" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3.2"></feGaussianBlur></filter>'
+   + '<filter id="pp-brilho" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="1.1"></feGaussianBlur></filter>'
+   + '<clipPath id="pp-corpo"><path d="'+TRONCO+'"></path><ellipse cx="120" cy="34" rx="25" ry="30"></ellipse></clipPath></defs>'
+   + '<g class="pele"><path class="membro-lavagem" d="'+BRACO_D+'"></path><path class="membro-lavagem" d="'+BRACO_E+'"></path>'
+   + '<path class="pescoco" d="M107 58 L107 82 L133 82 L133 58 Z"></path>'
+   + '<path class="tronco" d="'+TRONCO+'"></path><ellipse class="cabeca" cx="120" cy="34" rx="25" ry="30"></ellipse></g>'
+   + '<g clip-path="url(#pp-corpo)" opacity="0.5">'
+   + '<path d="M58 120 C66 150 66 200 72 254 L58 254 L52 150 Z" fill="'+TOM.sombra+'" filter="url(#pp-suave)"></path>'
+   + '<path d="M182 120 C174 150 174 200 168 254 L188 254 L192 150 Z" fill="'+TOM.sombra+'" filter="url(#pp-suave)"></path>'
+   + '<path d="M92 108 C104 130 136 130 148 108 C150 132 138 146 120 146 C102 146 90 132 92 108 Z" fill="'+TOM.sombra+'" opacity="0.45" filter="url(#pp-suave)"></path>'
+   + '</g>'
+   + '<g class="anatomia" clip-path="url(#pp-corpo)"><path d="M76 98 Q100 108 118 102"></path><path d="M164 98 Q140 108 122 102"></path>'
+   + '<path d="M120 104 L120 176"></path><path d="M86 122 Q120 134 154 122"></path><path d="M84 142 Q120 156 156 142"></path>'
+   + '<path d="M84 162 Q120 178 156 162"></path><path d="M80 182 Q120 202 160 182"></path>'
+   + '<path class="alba" d="M120 186 L120 236"></path><path class="alba" d="M104 206 Q120 210 136 206 M104 224 Q120 228 136 224"></path>'
+   + '<path class="ecm" d="M108 62 L114 82 M132 62 L126 82"></path>'
+   + '<path class="eixo" d="M94 104 L94 198"></path><path class="eixo" d="M146 104 L146 198"></path></g>'
+   + '<g class="rosto"><path class="cabelo" d="M95 30 C95 8 145 8 145 32 C145 20 138 14 120 14 C104 14 96 19 95 30 Z"></path>'
+   + '<path d="M108 30 L114 30 M126 30 L132 30"></path><path d="M107 24 Q111 22 115 24 M125 24 Q129 22 133 24"></path>'
+   + '<path id="pp-boca" d="M112 46 Q120 50 128 46"></path></g>'
+   + '<g clip-path="url(#pp-corpo)"><path class="avental" d="M70 96 C82 90 96 84 106 80 L120 104 L134 80 C144 84 158 90 170 96 L178 130 L182 254 L168 254 L160 150 L152 254 L88 254 L80 150 L72 254 L58 254 L62 130 Z"></path>'
+   + '<path class="dobra" d="M96 120 L88 254 M144 120 L152 254"></path></g>'
+   + '<g id="pp-palidez" clip-path="url(#pp-corpo)" opacity="0"><rect x="0" y="0" width="240" height="300" fill="#E9F0F4"></rect></g>'
+   + '<g id="pp-urticaria" clip-path="url(#pp-corpo)" opacity="0" filter="url(#pp-suave)">'
+   + URTICARIA.map(u=>'<circle cx="'+u[0]+'" cy="'+u[1]+'" r="'+u[2]+'" fill="#C2453C" opacity="0.4"></circle>').join('')+'</g>'
+   + '<g id="pp-suor" opacity="0" filter="url(#pp-brilho)">'
+   + SUOR.map(u=>'<ellipse cx="'+u[0]+'" cy="'+u[1]+'" rx="'+u[2]+'" ry="'+(u[2]*1.3).toFixed(1)+'" fill="#FFFFFF" opacity="0.85"></ellipse>').join('')+'</g>'
+   + '<g id="pp-cianose" opacity="0"><ellipse cx="48" cy="246" rx="7" ry="6" fill="#5C6E9E" filter="url(#pp-suave)"></ellipse>'
+   + '<ellipse cx="192" cy="246" rx="7" ry="6" fill="#5C6E9E" filter="url(#pp-suave)"></ellipse></g>'
+   + '<g class="focos">'+FOCOS.map(f=>'<circle cx="'+f.x+'" cy="'+f.y+'" r="2.2"></circle><text x="'+(f.x+5)+'" y="'+(f.y+3)+'">'+f.l+'</text>').join('')+'</g>'
+   + pontos + '</svg>';
+}
+
+// A figura e desenhada uma vez; cada tique so atualiza opacidade e o tique da
+// manobra feita. Trocar innerHTML sob o cursor mataria o hover.
+function atualizarFigura(v){
+  const lim=(x,a,b)=>Math.max(a,Math.min(b,x));
+  const palidez=lim((105-v.pas)/45,0,1)*0.55;
+  const cianose=lim((93-v.spo2)/12,0,1);
+  const suor=lim(Math.max((v.dor-5)/5,(105-v.pas)/45,SINAIS_DO_CASO.includes('sudorese')?0.4:0),0,1)*0.9;
+  const urt=SINAIS_DO_CASO.includes('urticaria')?0.9:0;
+  const set=(id,op)=>{const el=document.getElementById(id); if(el) el.setAttribute('opacity',op);};
+  set('pp-palidez',palidez); set('pp-cianose',cianose>0.2?cianose*0.7:0);
+  set('pp-suor',suor>0.1?suor:0); set('pp-urticaria',urt);
+  const boca=document.getElementById('pp-boca');
+  if (boca) boca.style.stroke = cianose>0.25 ? '#5C6E9E' : '';
+  MANOBRAS.forEach(m=>{ const g=document.querySelector('.ponto[data-m="'+m.id+'"]'); if(!g) return;
+    const reg=REGIOES[m.regiao], feita=E.manobras.includes(m.id);
+    g.classList.toggle('feita',feita);
+    const t=g.querySelector('.tique');
+    if (t && reg){ const p0=reg.formas[0];
+      t.setAttribute('d','M'+(p0.cx+p0.rx-9)+' '+(p0.cy-p0.ry+4)+' l3.5 3.5 l7 -8');
+      t.style.display = feita ? '' : 'none'; }
+  });
+  const cx=document.getElementById('inspecao');
+  if (cx){ const itens=[];
+    if(palidez>0.15) itens.push('p\u00e1lida');
+    if(suor>0.3) itens.push('sudoreica');
+    if(cianose>0.25) itens.push('cianose de extremidades');
+    if(urt) itens.push('urtic\u00e1ria generalizada');
+    cx.innerHTML = itens.map(i=>'<li>'+i+'</li>').join('');
+  }
+}
+
+function pintarConversa(){
+  const el=document.getElementById('conversa'); if(!el) return;
+  el.innerHTML = E.msgs.map(m=>'<article class="fala '+m.de+'"><span class="hora">'
+    + String(m.min).padStart(2,'0')+'′</span><p>'+esc(m.txt)+'</p></article>').join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+function pintar(){
+  if (E.fim) return pintarDebrief();
+  const {v,ativos}=estado(tMin()), nivel=gravidade(v);
+  const raiz=document.getElementById('raiz');
+  if (!document.getElementById('fita')) { raiz.innerHTML=esqueleto(); ligarEventos(); fitaQuadro(1400); requestAnimationFrame(fitaLoop); }
+  document.querySelector('.plantao').className='plantao '+nivel;
+
+  document.getElementById('relogio').textContent=rel(E.t);
+  document.getElementById('gasto').textContent=real(custo());
+  document.getElementById('gasto-nota').textContent=E.pedidos.length+' exames · '+E.doses.length+' doses';
+  const est=document.getElementById('estado');
+  est.textContent=nivel; est.className='grande estado '+(nivel==='critico'?'crit':nivel==='atencao'?'atencao':'');
+  document.getElementById('pam').textContent='PAM '+v.pam+' mmHg';
+
+  document.getElementById('vitais').innerHTML=[
+    ['FC',v.fc,'bpm',v.fc>150],['PA',v.pas+'/'+v.pad,'mmHg',v.pas<90],
+    ['PAM',v.pam,'mmHg',v.pam<65],['SpO₂',v.spo2,'%',v.spo2<92],
+    ['FR',v.fr,'irpm',v.fr>28||v.fr<10],['EtCO₂',v.etco2,'mmHg',false],
+    ['Temp',v.temp.toFixed(1),'°C',false],['Dor',v.dor,'0–10',false]
+  ].map(([k,val,u,fora])=>'<div'+(fora?' class="fora"':'')+'><dt>'+k+'</dt><dd class="tabular">'+val+'</dd><dd class="un">'+u+'</dd></div>').join('');
+
+  if (!document.querySelector('.mapa svg')) document.getElementById('mapa-svg').innerHTML=figuraSVG();
+  atualizarFigura(v);
+  const painel=document.getElementById('painel-ausculta');
+  painel.innerHTML = E.painel ? ('<div class="ausculta"><div class="topo"><b>'+esc(E.painel.nome)+'</b><div>'
+    + (E.painel.tipo!=='pulso'?'<button class="atalho" id="mudo">'+(mudo?'Ativar som':'Silenciar')+'</button> ':'')
+    + '<button class="atalho" id="fechar-ausc">Fechar</button></div></div>'
+    + '<canvas id="ausc"></canvas><p class="achado">'+esc(E.painel.achado(v))+'</p></div>') : '';
+  if (E.painel){
+    document.getElementById('fechar-ausc').onclick=()=>{E.painel=null;pararAusculta();pintar();};
+    const bm=document.getElementById('mudo');
+    if (bm) bm.onclick=()=>{mudo=!mudo; if(ganhoAtual) ganhoAtual.gain.setTargetAtTime(mudo?0:1,ac.currentTime,.05); pintar();};
+  }
+
+  const emAcao=document.getElementById('emacao');
+  emAcao.innerHTML='<span class="rotulo">Em ação · '+ativos.filter(a=>a.frac>0).length+' de '+E.doses.length+'</span>'
+   + (E.doses.length?'':'<p class="vazio">Nada administrado. Os números que você vê são só a doença.</p>')
+   + ativos.map(a=>'<article class="droga'+(a.frac<=0?' fim':'')+'"><header><b>'+esc(a.nome)+' '+esc(a.dose)
+     + '</b><span>'+a.minuto+'′ · '+a.fase+'</span></header><div class="barra"><i style="width:'
+     + Math.max(0,a.frac*100)+'%"></i></div><p class="efeito">'
+     + (Object.keys(a.contrib).filter(k=>Math.abs(a.contrib[k])>=.1)
+        .map(k=>k.toUpperCase()+' '+sinal(a.contrib[k])).join('&nbsp;&nbsp; ')||'sem efeito hemodinâmico')
+     + '</p>'+(a.motivo&&a.amp!==1?'<p class="inter">efeito amplificado ×'+a.amp+' — '+esc(a.motivo)+'</p>':'')
+     + '</article>').join('');
+
+  document.querySelectorAll('.abas button').forEach(b=>b.setAttribute('aria-selected',b.dataset.aba===E.aba));
+  const prontos=E.pedidos.filter(p=>min()>=p.prontoEm&&!p.visto).length;
+  document.getElementById('aba-res').innerHTML='Resultados'+(prontos?'<em class="badge">'+prontos+'</em>':'');
+
+  const corpo=document.getElementById('corpo-aba');
+  if (E.aba==='condutas'){
+    corpo.innerHTML='<ul class="catalogo">'+FARMACOS.map(f=>{
+      const dado=E.doses.filter(a=>a.id===f.id), aberto=E.doseAberta===f.id;
+      return '<li class="'+(aberto?'aberto':'')+'"><button data-farmaco="'+f.id+'"><span class="cat-nome">'+f.nome
+       + '</span><span class="cat-meta">'+f.classe+' · '+real(f.custo)+'</span>'
+       + (dado.length?'<span class="cat-estado">'+dado.length+'× · última '+dado[dado.length-1].minuto+'′</span>':'')
+       + '</button>'+(aberto?'<div class="doses"><p>'+esc(f.nota)+'</p><div>'
+       + f.doses.map((d,i)=>'<button data-inj="'+f.id+'" data-i="'+i+'">'+d.r+'<em>'+f.via+'</em></button>').join('')
+       + '</div></div>':'')+'</li>';}).join('')+'</ul>';
+  } else if (E.aba==='exames'){
+    corpo.innerHTML='<ul class="catalogo">'+EXAMES.map(e=>{
+      const p=E.pedidos.find(x=>x.id===e.id);
+      return '<li><button data-exame="'+e.id+'"'+(p?' disabled':'')+'><span class="cat-nome">'+e.nome
+       + '</span><span class="cat-meta">'+real(e.custo)+' · '+e.tat+' min</span>'
+       + (p?'<span class="cat-estado">'+(min()>=p.prontoEm?'pronto':'sai em '+(p.prontoEm-min())+' min')+'</span>':'')
+       + '</button></li>';}).join('')+'</ul>';
+  } else {
+    corpo.innerHTML='<div class="resultados">'+(E.pedidos.length?'':'<p class="vazio">Nada pedido ainda. O relógio corre igual.</p>')
+     + E.pedidos.map(p=>{ const e=EXAMES.find(x=>x.id===p.id), pronto=min()>=p.prontoEm;
+       return '<article class="laudo'+(pronto?'':' espera')+'"><header><span>'+String(p.minuto).padStart(2,'0')
+        + '′</span><b>'+e.nome+'</b><span class="flag '+(pronto?e.flag:'')+'">'
+        + (pronto?e.flag:(p.prontoEm-min())+' min')+'</span></header>'
+        + (pronto ? (p.visto ? '<p class="texto">'+esc(e.res)+'</p>'+(e.id==='ecg'?'<canvas class="ecg12" id="ecg12"></canvas>':'')
+                             : '<button class="abrir" data-abrir="'+p.id+'">Abrir resultado</button>')
+                  : '<div class="barra"><i style="width:'+Math.min(100,(min()-p.minuto)/e.tat*100)+'%"></i></div>')
+        + '</article>';}).join('')+'</div>';
+    const c12=document.getElementById('ecg12');
+    if (c12) desenharECG12(c12,v.fc,E.pedidos.find(p=>p.id==='ecg').minuto);
+  }
+
+  document.getElementById('aviso').textContent = nivel==='critico' ? 'A paciente está instável.'
+    : nivel==='atencao' ? 'Sinais no limite. Fique de olho.' : 'Quando decidir, encerre e assine a hipótese.';
+  document.getElementById('atalhos').style.display = E.msgs.filter(m=>m.de==='medico').length<2 ? 'flex' : 'none';
+  desenharTendencia();
+}
+
+function esqueleto(){
+  return '<div class="plantao"><header class="papeleta"><div>'
+  + '<span class="carimbo">Nível 3 · Pronto-socorro</span><h1>'+P.nome+'</h1>'
+  + '<p class="linha">'+P.idade+' anos · '+P.sexo+' · '+P.leito+' · entrada '+P.entrada+' · '+P.mrn+'</p>'
+  + '<p class="queixa">'+P.queixa+'</p></div>'
+  + '<dl class="campos">'
+  + '<div><dt>Tempo de plantão</dt><dd class="grande" id="relogio">00:00</dd><dd class="nota">acelerado ×30</dd></div>'
+  + '<div><dt>Gasto até aqui</dt><dd class="grande" id="gasto">R$ 0</dd><dd class="nota" id="gasto-nota"></dd></div>'
+  + '<div><dt>Estado</dt><dd class="grande estado" id="estado">estavel</dd><dd class="nota" id="pam"></dd></div>'
+  + '</dl></header><main class="mesa">'
+  + '<section class="coluna"><h2 class="rotulo">Conversa</h2><div class="conversa" id="conversa"></div>'
+  + '<div class="atalhos" id="atalhos">'
+  + ['Me conta o que aconteceu?','A dor vai para algum lugar?','A senhora tem alguma alergia?']
+      .map(s=>'<button class="atalho" data-pergunta="'+esc(s)+'">'+s+'</button>').join('')
+  + '</div>'
+  + '<form class="pergunta" id="form"><input id="entrada" placeholder="Pergunte alguma coisa a Célia" aria-label="Pergunta"><button type="submit">Perguntar</button></form>'
+  + '<div class="manobras"><h3 class="rotulo">Exame físico</h3><div class="mapa"><div id="mapa-svg"></div>'
+  + '<div class="mapa-lado"><ul class="inspecao" id="inspecao"></ul><p class="dica" id="dica">Clique numa região para examinar. Ausculta e pulso podem ser repetidos — o som segue os sinais vitais ao vivo.</p>'
+  + '<div id="painel-ausculta"></div></div></div></div></section>'
+  + '<section class="coluna instr-col"><div class="instrumento"><canvas class="fita" id="fita"></canvas>'
+  + '<dl class="vitais" id="vitais"></dl>'
+  + '<div class="tendencia"><div class="tend-legenda"><span class="rotulo">Tendência</span>'
+  + '<em style="color:#17110E">FC</em><em style="color:#1B3FA0">PAS</em><em style="color:#2C6A4A">SpO₂</em>'
+  + '<span class="tend-dica">passe o cursor</span></div>'
+  + '<div class="tend-papel" id="tend-papel"><canvas id="tend"></canvas></div></div></div>'
+  + '<div class="emacao" id="emacao"></div>'
+  + '<div class="pedidos"><div class="abas" role="tablist">'
+  + '<button data-aba="condutas" role="tab">Prescrição</button>'
+  + '<button data-aba="exames" role="tab">Exames</button>'
+  + '<button data-aba="resultados" role="tab" id="aba-res">Resultados</button></div>'
+  + '<div id="corpo-aba"></div></div></section></main>'
+  + '<footer class="rodape"><p id="aviso"></p><button class="encerrar" id="encerrar">Encerrar o caso</button></footer></div>';
+}
+
+function ligarEventos(){
+  const raiz=document.getElementById('raiz');
+  raiz.addEventListener('click',ev=>{
+    const alvo=ev.target.closest('[data-pergunta],[data-farmaco],[data-inj],[data-exame],[data-abrir],[data-aba],[data-m],#encerrar');
+    if(!alvo) return;
+    if (alvo.dataset.pergunta!==undefined && alvo.dataset.pergunta) return perguntar(alvo.dataset.pergunta);
+    if (alvo.dataset.m){ const m=MANOBRAS.find(x=>x.id===alvo.dataset.m);
+      examinar(m); if(m.tipo==='coracao'||m.tipo==='pulmao') iniciarAusculta(m.tipo); else pararAusculta(); return; }
+    if (alvo.dataset.inj){ const f=FARMACOS.find(x=>x.id===alvo.dataset.inj); return injetar(f,f.doses[+alvo.dataset.i]); }
+    if (alvo.dataset.farmaco){ E.doseAberta = E.doseAberta===alvo.dataset.farmaco?null:alvo.dataset.farmaco; return pintar(); }
+    if (alvo.dataset.exame) return pedir(EXAMES.find(x=>x.id===alvo.dataset.exame));
+    if (alvo.dataset.abrir){ const p=E.pedidos.find(x=>x.id===alvo.dataset.abrir); p.visto=true; return pintar(); }
+    if (alvo.dataset.aba){ E.aba=alvo.dataset.aba; return pintar(); }
+    if (alvo.id==='encerrar') return abrirFechamento();
+  });
+  raiz.addEventListener('keydown',ev=>{
+    const g=ev.target.closest('.ponto');
+    if (g && (ev.key==='Enter'||ev.key===' ')){ ev.preventDefault(); g.click(); }
+  });
+  raiz.addEventListener('mouseover',ev=>{
+    const g=ev.target.closest('.ponto'); const d=document.getElementById('dica'); if(!g||!d) return;
+    const m=MANOBRAS.find(x=>x.id===g.dataset.m), reg=REGIOES[m.regiao];
+    d.innerHTML='<b>'+esc(m.nome)+'</b><i>'+esc(reg.nome+(reg.det?' · '+reg.det:''))+'</i><em>'
+      +(E.manobras.includes(m.id)?'reavaliar · 20 s':'1 min do plantão')+'</em>';
+  });
+  raiz.addEventListener('mouseout',ev=>{
+    if (ev.target.closest('.ponto')){ const d=document.getElementById('dica');
+      if(d) d.textContent='Clique numa região para examinar. Ausculta e pulso podem ser repetidos — o som segue os sinais vitais ao vivo.'; }
+  });
+  document.getElementById('form').addEventListener('submit',ev=>{
+    ev.preventDefault(); const i=document.getElementById('entrada'); perguntar(i.value); i.value='';
+  });
+  const papel=document.getElementById('tend-papel');
+  papel.addEventListener('mousemove',ev=>{
+    if(!E.hist.length) return;
+    const cx=papel.getBoundingClientRect();
+    const t=escala.ini+((ev.clientX-cx.left-42)/Math.max(1,escala.larg-46))*(escala.fim-escala.ini);
+    let perto=E.hist[0];
+    E.hist.forEach(p=>{ if(Math.abs(p.t-t)<Math.abs(perto.t-t)) perto=p; });
+    leitura=perto; desenharTendencia();
+    const px=((perto.t-escala.ini)/Math.max(.1,escala.fim-escala.ini))*(escala.larg-46)+42;
+    let cai=papel.querySelector('.leitura');
+    if(!cai){ cai=document.createElement('div'); cai.className='leitura'; papel.appendChild(cai); }
+    const dose=E.doses.filter(a=>Math.abs(a.minuto-perto.t)<.6)
+      .map(a=>FARMACOS.find(f=>f.id===a.id).nome.split(' ')[0]);
+    cai.innerHTML='<b>'+Math.round(perto.t)+'′</b><span style="color:#17110E">FC '+perto.fc
+      +'</span><span style="color:#1B3FA0">PAS '+perto.pas+'</span><span style="color:#2C6A4A">SpO₂ '
+      +perto.spo2+'</span>'+(dose.length?'<em>'+dose.join(', ')+'</em>':'');
+    cai.style.left=Math.min(Math.max(px,4),escala.larg-124)+'px';
+  });
+  papel.addEventListener('mouseleave',()=>{ leitura=null; const c=papel.querySelector('.leitura');
+    if(c) c.remove(); desenharTendencia(); });
+}
+
+function abrirFechamento(){
+  const d=document.createElement('div'); d.className='folha';
+  d.innerHTML='<form><span class="carimbo">Fechamento</span><h2>Antes do gabarito, assine o que você acha.</h2>'
+   + '<label>Hipótese principal<input id="hip" required placeholder="Escreva com suas palavras"></label>'
+   + '<label>Conduta imediata<textarea id="pl" rows="3" required placeholder="O que você faz agora, nesta ordem"></textarea></label>'
+   + '<div class="acoes"><button type="button" class="sec" id="voltar">Voltar ao leito</button>'
+   + '<button type="submit">Ver o debriefing</button></div></form>';
+  document.body.appendChild(d);
+  d.querySelector('#voltar').onclick=()=>d.remove();
+  d.querySelector('form').onsubmit=ev=>{ ev.preventDefault();
+    const h=d.querySelector('#hip').value; d.remove(); pararAusculta();
+    E.fim=pontuar(h); pintarDebrief(); };
+}
+
+const PILARES=[['anamnese','Anamnese',25,'temas que a paciente chegou a contar'],
+  ['investigacao','Investigação',25,'acertos menos desperdício, por custo'],
+  ['conduta','Conduta',35,'o que foi feito, e em quanto tempo'],
+  ['soft','Soft skills',15,'apresentação, linguagem, explicação']];
+const SEV={critico:'Crítico',importante:'Importante',refinamento:'Refinamento'};
+
+
+// ===========================================================================
+// LINHA DO TEMPO DO ATENDIMENTO
+// O que a lista de achados nao mostra: o eixo em que o caso aconteceu.
+// Cada marca e um dado. Nada aqui e ornamento.
+// ===========================================================================
+const CRONO_REG=['perguntas','exame físico','exames','condutas','PA sistólica'];
+const CRONO_ALT=34, CRONO_TOPO=26, CRONO_RAIL=78;
+let cronoEscala={x0:CRONO_RAIL,larg:400,tMax:1};
+
+function desenharCrono(leitura){
+  const cv=document.getElementById('crono'); if(!cv||!E.fim) return;
+  const linha=E.fim.linha, ctx=cv.getContext('2d'), dpr=devicePixelRatio||1;
+  const largura=cv.parentElement.clientWidth||640;
+  const altura=CRONO_TOPO+CRONO_REG.length*CRONO_ALT+26;
+  cv.width=Math.round(largura*dpr); cv.height=Math.round(altura*dpr);
+  cv.style.width=largura+'px'; cv.style.height=altura+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const x0=CRONO_RAIL, x1=largura-10;
+  const tMax=Math.max(E.fim.min,10,...linha.metas.map(m=>m.t));
+  cronoEscala={x0,larg:x1-x0,tMax};
+  const X=t=>x0+((x1-x0)*t)/tMax, base=i=>CRONO_TOPO+i*CRONO_ALT+CRONO_ALT-10;
+
+  ctx.fillStyle='#FCF1EC'; ctx.fillRect(0,0,largura,altura);
+  ctx.lineWidth=1;
+  [['#F3DAD2',4],['#E7B4A5',20]].forEach(([cor,passo])=>{
+    ctx.strokeStyle=cor; ctx.beginPath();
+    for(let x=x0;x<=x1;x+=passo){ctx.moveTo(x+.5,CRONO_TOPO-8);ctx.lineTo(x+.5,altura-22);}
+    for(let y=CRONO_TOPO-8;y<=altura-22;y+=passo){ctx.moveTo(x0,y+.5);ctx.lineTo(x1,y+.5);}
+    ctx.stroke();});
+
+  ctx.font='500 9px "IBM Plex Mono",monospace';
+  linha.metas.forEach(m=>{ const px=X(m.t);
+    const estourou = m.feitoEm==null || m.feitoEm>m.t;
+    ctx.strokeStyle=estourou?'#B8241C':'#2C6A4A'; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(px,CRONO_TOPO-8); ctx.lineTo(px,altura-22); ctx.stroke();
+    ctx.setLineDash([]); ctx.fillStyle=estourou?'#B8241C':'#2C6A4A';
+    ctx.fillText(m.rotulo,Math.min(px+3,largura-66),CRONO_TOPO-12); });
+
+  CRONO_REG.forEach((r,i)=>{ const y=base(i);
+    ctx.strokeStyle='#D9C3B9'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(x0,y+.5); ctx.lineTo(x1,y+.5); ctx.stroke();
+    ctx.fillStyle='#74645C'; ctx.font='500 9px "IBM Plex Mono",monospace';
+    ctx.fillText(r,4,y); });
+
+  const tique=(i,t,cor,alt,larg)=>{ const y=base(i),px=X(t);
+    ctx.strokeStyle=cor; ctx.lineWidth=larg;
+    ctx.beginPath(); ctx.moveTo(px,y); ctx.lineTo(px,y-alt); ctx.stroke(); };
+
+  linha.perguntas.forEach(t=>tique(0,t,'#1B3FA0',14,1));
+  linha.exame.forEach(t=>tique(1,t,'#17110E',14,1));
+
+  const yEx=base(2);
+  linha.exames.forEach(p=>{ const a=X(p.minuto), b=X(Math.min(p.prontoEm,tMax));
+    ctx.fillStyle=p.visto?'#17110E':'#FCF1EC';
+    ctx.strokeStyle=p.indicado?'#17110E':'#B8241C';
+    ctx.lineWidth=1.3; ctx.setLineDash(p.visto?[]:[3,2]);
+    ctx.beginPath(); ctx.rect(a,yEx-13,Math.max(4,b-a),9); ctx.fill(); ctx.stroke();
+    ctx.setLineDash([]); });
+
+  linha.condutas.forEach(c=>tique(3,c.minuto,
+    c.classe==='contraindicado'?'#B8241C':c.classe==='esperado'?'#2C6A4A':'#17110E',16,1.4));
+
+  const yP=base(4), pas=linha.historico.filter(p=>p.pas);
+  if (pas.length>1){ ctx.strokeStyle='#1B3FA0'; ctx.lineWidth=1.3; ctx.beginPath();
+    pas.forEach((p,i)=>{ const px=X(Math.min(p.t,tMax)), py=yP-((p.pas-50)/150)*22;
+      i?ctx.lineTo(px,py):ctx.moveTo(px,py); });
+    ctx.stroke(); }
+
+  ctx.fillStyle='#B0776A'; ctx.font='500 9px "IBM Plex Mono",monospace';
+  ctx.fillText('0\u2032',x0,altura-8); ctx.fillText(Math.round(tMax)+'\u2032',x1-22,altura-8);
+
+  if (leitura!=null){ const px=X(leitura);
+    ctx.strokeStyle='#74645C'; ctx.setLineDash([2,3]);
+    ctx.beginPath(); ctx.moveTo(px,CRONO_TOPO-8); ctx.lineTo(px,altura-22); ctx.stroke();
+    ctx.setLineDash([]); }
+}
+
+function ligarCrono(){
+  const papel=document.getElementById('crono-papel'); if(!papel) return;
+  papel.addEventListener('mousemove',ev=>{
+    const cx=papel.getBoundingClientRect();
+    const {x0,larg,tMax}=cronoEscala;
+    const t=Math.max(0,Math.min(tMax,((ev.clientX-cx.left-x0)/Math.max(1,larg))*tMax));
+    desenharCrono(t);
+    const perto=[...E.fim.linha.condutas,...E.fim.linha.exames]
+      .filter(o=>Math.abs(o.minuto-t)<0.8).map(o=>o.nome);
+    let cai=papel.querySelector('.crono__leitura');
+    if(!cai){cai=document.createElement('div');cai.className='crono__leitura';papel.appendChild(cai);}
+    cai.innerHTML=Math.round(t)+'\u2032'+(perto.length?'<em>'+perto.join(' \u00b7 ')+'</em>':'');
+  });
+  papel.addEventListener('mouseleave',()=>{ desenharCrono(null);
+    const c=papel.querySelector('.crono__leitura'); if(c) c.remove(); });
+  window.addEventListener('resize',()=>desenharCrono(null));
+}
+
+function pintarDebrief(){
+  const r=E.fim;
+  document.getElementById('raiz').innerHTML='<div class="debrief">'
+   + '<header class="deb-topo"><div><span class="carimbo">Folha de debriefing</span>'
+   + '<h1>'+P.nome+' · '+GABARITO.dx+'</h1><p class="ref">'+GABARITO.ref+'</p></div>'
+   + '<div class="deb-nota"><span class="rotulo">Total</span><strong>'+r.total+'</strong><span class="un">de 100</span></div></header>'
+   + '<section class="pilares">'+PILARES.map(([k,nome,max,fonte])=>
+       '<div class="pilar"><div class="pilar-cab"><b>'+nome+'</b><span class="tabular">'+r[k]+'<i>/'+max+'</i></span></div>'
+       + '<div class="regua"><i style="width:'+(r[k]/max*100)+'%"></i></div><p>'+fonte+'</p></div>').join('')+'</section>'
+   + '<section class="numeros">'
+   + '<div><span class="rotulo">Tempo até encerrar</span><b>'+r.min+' min</b></div>'
+   + '<div><span class="rotulo">Custo do atendimento</span><b>'+real(r.custo)+'</b></div>'
+   + '<div><span class="rotulo">Manobras de exame</span><b>'+r.manobras+' de 4</b></div>'
+   + '<div><span class="rotulo">Porta-balão</span><b>'+(r.minutoChave!==null?r.minutoChave+' min':'não acionado')+'</b></div></section>'
+   + '<section class="crono"><h2 class="rotulo">A linha do tempo do seu atendimento</h2>'
+   + '<p>Cada marca \u00e9 uma a\u00e7\u00e3o sua, no minuto em que aconteceu. A barra de exame \u00e9 a espera pelo '
+   + 'resultado: cheia quer dizer que voc\u00ea abriu, tracejada quer dizer que ficou pronto e voc\u00ea n\u00e3o olhou. '
+   + 'As verticais s\u00e3o as janelas do caso \u2014 verdes quando cumpridas, vermelhas quando estouraram.</p>'
+   + '<div class="crono__papel" id="crono-papel"><canvas id="crono" aria-label="Linha do tempo do atendimento"></canvas></div>'
+   + '<ul class="crono__legenda"><li class="lg-azul">pergunta</li><li class="lg-tinta">exame</li>'
+   + '<li class="lg-verde">conduta esperada</li><li class="lg-vermelho">contraindicada \u00b7 janela estourada</li></ul></section>'
+   + '<section class="achados"><h2 class="rotulo">O que apareceu no seu atendimento · '+r.ach.length+' pontos</h2><ol>'
+   + r.ach.map(a=>'<li class="achado '+a.sev+'"><div class="tags"><span class="sev">'+SEV[a.sev]
+       + '</span><span>'+a.pilar+'</span></div><b>'+esc(a.t)+'</b><p>'+esc(a.d)+'</p></li>').join('')
+   + '</ol></section>'
+   + '<footer class="deb-rodape"><p>Anamnese, investigação e conduta saem de contas contra o gabarito: a mesma sessão dá a mesma nota, sempre. '
+   + 'Soft skills aqui é heurística local; no produto é o modelo julgando com rubrica fechada.</p>'
+   + '<button id="denovo">Atender de novo</button></footer></div>';
+  document.getElementById('denovo').onclick=()=>location.reload();
+  desenharCrono(null);
+  ligarCrono();
+}
+
+// ===========================================================================
+// RELÓGIO
+// ===========================================================================
+setInterval(()=>{
+  if (E.fim) return;
+  E.t += ACEL/2;
+  const {v}=estado(tMin());
+  E.hist.push({t:tMin(),fc:v.fc,pas:v.pas,spo2:v.spo2});
+  if (E.hist.length>500) E.hist.shift();
+  const nivel=gravidade(v);
+  if (nivel!==E.gravAnt){
+    const antes=E.gravAnt; E.gravAnt=nivel;
+    if (nivel==='critico'){
+      registrar('alarme','Alarme: PA '+v.pas+'/'+v.pad+', FC '+v.fc+', SpO₂ '+v.spo2+'%. Célia fica pálida e sonolenta.');
+      registrar('paciente','*voz arrastada* Doutor... tá tudo rodando...');
+    } else if (nivel==='estavel'&&antes==='critico'){
+      registrar('alarme','Estabilizou: PA '+v.pas+'/'+v.pad+', FC '+v.fc+', SpO₂ '+v.spo2+'%.');
+    }
+  }
+  pintar();
+},500);
+
+setInterval(()=>{ fasePulso+=0.02; desenharAusculta(); },33);
+
+pintar(); pintarConversa();
+})();
+</script>
