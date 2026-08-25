@@ -13,7 +13,7 @@
   --linha-forte: #CDB8B0;
   --tinta: #191411;
   --tinta-2: #4C423C;
-  --tinta-3: #8C7C74;
+  --tinta-3: #74645C;
   --caneta: #1B3FA0;
   --caneta-fundo: #E8EDF9;
   --carimbo: #B8241C;
@@ -317,6 +317,30 @@ button { cursor: pointer; }
   margin: 22px 0 0; font-size: 14.5px; color: var(--tinta);
 }
 
+.cronologia { margin-top: 34px; }
+.cronologia .rotulo { display: block; padding-bottom: 8px; border-bottom: 1px solid var(--linha); }
+.cronologia__nota { margin: 12px 0 14px; font-size: 13.5px; color: var(--tinta-3); max-width: 74ch; line-height: 1.5; }
+.cronologia__papel { position: relative; border: 1px solid var(--linha-forte); }
+.cronologia__papel canvas { display: block; width: 100%; }
+.cronologia__leitura {
+  position: absolute; top: 6px; right: 8px; pointer-events: none;
+  background: var(--papel); border: 1px solid var(--linha-forte); padding: 4px 8px;
+  font-size: 10.5px; color: var(--tinta-2);
+}
+.cronologia__leitura em { font-style: normal; color: var(--caneta); margin-left: 8px; }
+.cronologia__legenda { list-style: none; display: flex; flex-wrap: wrap; gap: 14px; margin: 10px 0 0; padding: 0; }
+.cronologia__legenda li {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .08em; color: var(--tinta-3);
+}
+.cronologia__legenda li::before {
+  content: ''; display: inline-block; width: 9px; height: 2px; margin-right: 6px;
+  vertical-align: middle; background: currentColor;
+}
+.cronologia__legenda .lg-azul { color: var(--caneta); }
+.cronologia__legenda .lg-tinta { color: var(--tinta); }
+.cronologia__legenda .lg-verde { color: var(--verde); }
+.cronologia__legenda .lg-vermelho { color: var(--carimbo); }
+
 .achados { margin-top: 30px; }
 .achados ol { list-style: none; margin: 14px 0 0; padding: 0; }
 .achado { border-top: 1px solid var(--linha); padding: 16px 0 16px 16px; border-left: 2px solid var(--linha-forte); }
@@ -550,35 +574,60 @@ button { cursor: pointer; }
   .casos li { flex-direction: column; align-items: flex-start; gap: 12px; }
 }
 
-/* ------------------------------------------------------- mapa corporal */
-.mapa { display: grid; grid-template-columns: 138px minmax(0, 1fr); gap: 18px; align-items: start; margin-top: 10px; }
-.mapa__svg { width: 138px; height: auto; display: block; }
-.mapa__figura { fill: none; stroke: var(--tinta-3); stroke-width: 1.1; stroke-linejoin: round; stroke-linecap: round; }
-.mapa__figura ellipse, .mapa__figura path { fill: var(--papel-2); }
-.mapa__detalhe { fill: none; stroke-dasharray: 2 3; }
+/* ------------------------------------------------------- prancha do torax */
+.mapa { display: grid; grid-template-columns: minmax(180px, 244px) minmax(0, 1fr); gap: 20px; align-items: start; margin-top: 10px; }
+.mapa__svg { width: 100%; max-width: 244px; height: auto; display: block; }
+
+.mapa__pele { stroke: var(--linha-pele, #6E482E); stroke-width: 1.1; stroke-linejoin: round; stroke-opacity: .75; }
+.mapa__pele .tronco, .mapa__pele .cabeca, .mapa__pele .pescoco { fill: url(#pp-pele); }
+.mapa__pele .membro-lavagem {
+  fill: none; stroke: url(#pp-pele); stroke-width: 17; stroke-linecap: round; stroke-linejoin: round; stroke-opacity: 1;
+}
+.mapa__anatomia { fill: none; stroke: var(--tinta); stroke-width: .9; stroke-opacity: .22; stroke-linecap: round; }
+.mapa__anatomia .mapa__alba { stroke-opacity: .16; }
+.mapa__anatomia .mapa__ecm { stroke-opacity: .18; }
+.mapa__anatomia .mapa__eixo { stroke-dasharray: 2 4; stroke-opacity: .12; }
+.mapa__rosto { fill: none; stroke: var(--tinta); stroke-width: 1.2; stroke-linecap: round; stroke-opacity: .55; }
+.mapa__rosto .cabelo { fill: #4A3A31; stroke: none; opacity: .85; }
+.mapa__rosto .boca--edema { fill: #B9727A; stroke-opacity: .5; }
+.mapa__avental { fill: url(#pp-avental); stroke: #9BAEBD; stroke-width: .9; opacity: .96; }
+.mapa__dobra { fill: none; stroke: #9BAEBD; stroke-width: .8; opacity: .5; }
+.mapa__focos { opacity: .4; transition: opacity .15s ease; }
+.mapa__focos--destaque { opacity: 1; }
+.mapa__focos circle { fill: var(--caneta); }
+.mapa__focos text { font-family: var(--mono); font-size: 8px; font-weight: 500; fill: var(--caneta); }
+
+.mapa__inspecao {
+  list-style: none; margin: 0 0 12px; padding: 0; display: flex; flex-wrap: wrap; gap: 5px;
+}
+.mapa__inspecao li {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--carimbo); border: 1px solid var(--carimbo); padding: 2px 7px;
+}
+
 .mapa__ponto { cursor: pointer; }
 .mapa__area {
-  fill: var(--caneta); fill-opacity: .06; stroke: var(--caneta); stroke-width: 1;
-  stroke-dasharray: 3 3; transition: fill-opacity .15s ease;
+  fill: var(--caneta); fill-opacity: .07; stroke: var(--caneta); stroke-width: 1;
+  stroke-opacity: .55; transition: fill-opacity .15s ease, stroke-opacity .15s ease;
 }
-.mapa__miolo { fill: var(--caneta); }
-.mapa__ponto:hover .mapa__area, .mapa__ponto:focus-visible .mapa__area { fill-opacity: .22; stroke-dasharray: none; }
+.mapa__ponto:hover .mapa__area, .mapa__ponto:focus-visible .mapa__area { fill-opacity: .2; stroke-opacity: 1; }
 .mapa__ponto:focus-visible { outline: none; }
-.mapa__ponto:focus-visible .mapa__area { stroke-width: 2; }
-.mapa__ponto--ativa .mapa__area { fill-opacity: .3; stroke-dasharray: none; stroke-width: 1.6; }
+.mapa__ponto:focus-visible .mapa__area { stroke-width: 2.2; }
+.mapa__ponto--ativa .mapa__area { fill-opacity: .26; stroke-opacity: 1; stroke-width: 1.8; }
 .mapa__ponto--feita .mapa__area { stroke: var(--verde); fill: var(--verde); }
-.mapa__ponto--feita .mapa__miolo { fill: var(--verde); }
-.mapa__tique { fill: none; stroke: var(--verde); stroke-width: 1.6; stroke-linecap: round; }
-.mapa__lado { padding-top: 6px; }
-.mapa__dica { margin: 0 0 12px; font-size: 13px; color: var(--tinta-3); line-height: 1.45; min-height: 40px; }
-.mapa__dica b { display: block; font-size: 15px; color: var(--tinta); font-weight: 600; }
+.mapa__tique { fill: none; stroke: var(--verde); stroke-width: 1.8; stroke-linecap: round; }
+
+.mapa__lado { padding-top: 4px; }
+.mapa__dica { margin: 0 0 12px; font-size: 13px; color: var(--tinta-3); line-height: 1.45; min-height: 62px; }
+.mapa__dica b { display: block; font-size: 15.5px; color: var(--tinta); font-weight: 600; }
+.mapa__dica span { display: block; font-size: 12.5px; color: var(--tinta-2); margin: 1px 0 4px; }
 .mapa__dica em {
   font-style: normal; font-family: var(--mono); font-size: 10px;
   letter-spacing: .1em; text-transform: uppercase; color: var(--caneta);
 }
 .mapa__extras { display: flex; flex-wrap: wrap; gap: 6px; }
 .mapa__extras button {
-  background: none; border: 1px solid var(--linha-forte); padding: 7px 11px; font-size: 12.5px;
+  background: none; border: 1px solid var(--linha-forte); padding: 9px 12px; font-size: 12.5px; min-height: 40px;
 }
 .mapa__extras button:hover, .mapa__extras button.ativa { background: var(--caneta-fundo); border-color: var(--caneta); }
 

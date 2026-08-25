@@ -5,7 +5,7 @@ import PainelAusculta from './PainelAusculta.jsx';
 import MapaCorporal from './MapaCorporal.jsx';
 import ECG12 from './ECG12.jsx';
 import { exames, farmacos, acharExame, acharFarmaco } from './dados/catalogo.js';
-import { responder, lerPostura, estado, gravidade, pontuar, labDoCaso, ACELERACAO } from './motor.js';
+import { responder, lerPostura, estado, gravidade, pontuar, labDoCaso, condutaDoCaso, ACELERACAO } from './motor.js';
 import { criarAudioContexto } from './ausculta.js';
 
 const rel = (seg) => {
@@ -126,13 +126,47 @@ export default function Atendimento({ caso, contexto, aoEncerrar, aoSair }) {
     registrar('conduta', `${f.nome} ${dose.rotulo} — ${f.via}`);
   }
 
+  // A cronologia do atendimento: os mesmos dados da pontuação, no eixo do tempo.
+  function montarLinha() {
+    const metas = [];
+    for (const [id, g] of Object.entries(caso.labs)) {
+      if (!g.metaMin) continue;
+      const p = pedidos.find((x) => x.id === id);
+      metas.push({ t: g.metaMin, rotulo: acharExame(id)?.nome.split(' ')[0] || id,
+        feitoEm: p ? p.minuto : null });
+    }
+    const chave = caso.condutas[caso.gabarito.condutaChave];
+    if (chave?.janela) {
+      const a = administracoes.find((x) => x.id === caso.gabarito.condutaChave);
+      metas.push({ t: chave.janela, rotulo: caso.gabarito.rotuloTempo.toLowerCase(),
+        feitoEm: a ? a.minuto : null });
+    }
+    return {
+      perguntas: mensagens.filter((m) => m.de === 'medico').map((m) => m.minuto),
+      exame: mensagens.filter((m) => m.de === 'exame').map((m) => m.minuto),
+      exames: pedidos.map((p) => {
+        const e = acharExame(p.id), g = labDoCaso(caso, p.id);
+        return { nome: e.nome, minuto: p.minuto, prontoEm: p.prontoEm,
+          visto: p.visto, indicado: !!(g.indicado || g.aceitavel) };
+      }),
+      condutas: administracoes.map((a) => ({
+        nome: acharFarmaco(a.id)?.nome || a.id,
+        minuto: a.minuto,
+        classe: condutaDoCaso(caso, a.id).classe,
+      })),
+      historico,
+      metas,
+    };
+  }
+
   function encerrar() {
     const r = pontuar(caso, {
       revelados, pedidos, administracoes,
       postura: lerPostura(mensagens.filter((m) => m.de === 'medico').map((m) => m.texto)),
       hipotese, minFinal: min,
     });
-    aoEncerrar({ ...r, custo, min, manobras: manobras.length, hipotese, plano, casoId: caso.id, contexto });
+    aoEncerrar({ ...r, custo, min, manobras: manobras.length, hipotese, plano,
+      casoId: caso.id, contexto, linha: montarLinha() });
   }
 
   const prontos = pedidos.filter((p) => min >= p.prontoEm && !p.visto);
@@ -193,6 +227,8 @@ export default function Atendimento({ caso, contexto, aoEncerrar, aoSair }) {
               feitas={manobras}
               ativa={painelAberto?.id}
               aoExaminar={examinar}
+              v={v}
+              aparencia={caso.aparencia}
             />
             {painelAberto && (
               <PainelAusculta manobra={painelAberto} v={v} audioCtx={audioCtxRef.current}

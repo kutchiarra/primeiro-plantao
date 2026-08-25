@@ -1,3 +1,4 @@
+import LinhaDoTempo from './LinhaDoTempo.jsx';
 import { acharFarmaco } from './dados/catalogo.js';
 
 const PILARES = [
@@ -62,6 +63,8 @@ export default function Debrief({ r, caso, aoVoltar, aoRefazer }) {
           {r.aluno && <>{r.aluno} · </>}Nota mínima da prova: {r.notaMinima}/100 — {r.total >= r.notaMinima ? 'Aprovado' : 'Reprovado'}
         </p>
       )}
+
+      {r.linha && <LinhaDoTempo linha={r.linha} minFinal={r.min} />}
 
       <section className="achados">
         <h2 className="rotulo">O que apareceu no seu atendimento · {r.achados.length} pontos</h2>

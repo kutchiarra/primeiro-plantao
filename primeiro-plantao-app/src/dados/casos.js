@@ -22,6 +22,8 @@ export const casoDorToracica = {
   },
 
   base: { fc: 108, pas: 158, pad: 94, spo2: 94, fr: 24, temp: 37.1, etco2: 34, dor: 9 },
+  // Aparência do paciente na prancha: tom de pele e sinais visíveis.
+  aparencia: { tom: 'medio', sexo: 'f', sinais: ['sudorese'] },
   ritmo: { supra: 0.26, rotulo: 'II' },
   // Sem tratamento, a taquicardia sobe devagar. A dor não cede sozinha.
   evolucao: (t) => ({ fc: Math.min(t * 0.3, 16), pas: Math.min(t * 0.2, 8) }),
@@ -153,6 +155,7 @@ export const casoAnafilaxia = {
   },
 
   base: { fc: 118, pas: 104, pad: 62, spo2: 93, fr: 26, temp: 36.8, etco2: 30, dor: 3 },
+  aparencia: { tom: 'claro', sexo: 'm', sinais: ['urticaria', 'edema_labial'] },
   ritmo: { supra: 0, rotulo: 'II' },
   // Anafilaxia sem adrenalina: piora rápido e não para sozinha.
   evolucao: (t) => ({
