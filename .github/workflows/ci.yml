@@ -1,0 +1,35 @@
+name: CI
+
+# Roda em toda proposta de mudança para main. Com três pessoas no mesmo
+# repositório, é isto que impede "na minha máquina funcionava" de virar
+# o problema de outra pessoa.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  verificar:
+    name: verificar
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: primeiro-plantao-app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: primeiro-plantao-app/package-lock.json
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
